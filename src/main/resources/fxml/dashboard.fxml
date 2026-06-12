@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="rootPane" prefHeight="600.0" prefWidth="900.0" styleClass="root-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edusmart.ui.DashboardController">
+   <children>
+      <!-- Top Navigation Bar -->
+      <HBox alignment="CENTER_LEFT" prefHeight="70.0" styleClass="brand-sidebar" spacing="20.0" VBox.vgrow="NEVER">
+         <padding>
+            <Insets left="30.0" right="30.0" />
+         </padding>
+         <children>
+            <Label styleClass="brand-icon" text="🎓">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Label>
+            <Label styleClass="brand-title" text="EduSmart">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            
+            <HBox HBox.hgrow="ALWAYS" /> <!-- Spacer -->
+            
+            <!-- User Status Info -->
+            <HBox alignment="CENTER" spacing="12.0">
+               <children>
+                  <VBox alignment="CENTER_RIGHT" spacing="2.0">
+                     <children>
+                        <Label fx:id="headerUsernameLabel" styleClass="field-label" text="John Doe" />
+                        <Label fx:id="headerRoleLabel" styleClass="info-header" text="ROLE_ADMIN" />
+                     </children>
+                  </VBox>
+                  <Circle fx:id="avatarCircle" fill="#6366f1" radius="20.0" stroke="TRANSPARENT" />
+                  <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" styleClass="login-button" text="Sign Out" prefHeight="32.0">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+      
+      <!-- Main Content Area -->
+      <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+         <children>
+            <!-- Left Side: Profile & OOP Pillar Inspector -->
+            <VBox prefWidth="350.0" styleClass="form-container" spacing="20.0" HBox.hgrow="NEVER">
+               <padding>
+                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+               </padding>
+               <children>
+                  <Label styleClass="form-title" text="Active Session">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  
+                  <!-- Profile Attributes List -->
+                  <VBox spacing="12.0" styleClass="helper-card">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="helper-header" text="LOGGED IN AS" />
+                              <Label fx:id="profileUsernameLabel" styleClass="field-label" text="admin" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="helper-header" text="EMAIL ADDRESS" />
+                              <Label fx:id="profileEmailLabel" styleClass="helper-credential" text="admin@edusmart.com" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="helper-header" text="DATABASE ID" />
+                              <Label fx:id="profileIdLabel" styleClass="helper-credential" text="1" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="helper-header" text="CREATION DATE" />
+                              <Label fx:id="profileCreatedLabel" styleClass="helper-credential" text="2026-06-12 17:30:00" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  
+                  <!-- OOP Demonstration Info Box -->
+                  <VBox spacing="10.0" styleClass="brand-info-card" maxWidth="Infinity">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <Label styleClass="info-header" text="POLYMORPHISM IN ACTION" />
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="info-item" text="• Parent class field (UserBase.role):" />
+                              <Label fx:id="rawRoleLabel" styleClass="field-label" text="ROLE_ADMIN" textFill="#818cf8"/>
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="info-item" text="• Overridden method (User.getRoleName()):" />
+                              <Label fx:id="polymorphicRoleLabel" styleClass="field-label" text="ADMIN" textFill="#a855f7"/>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            
+            <!-- Right Side: Main Workboard -->
+            <VBox spacing="25.0" HBox.hgrow="ALWAYS">
+               <padding>
+                  <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+               </padding>
+               <children>
+                  <VBox spacing="5.0">
+                     <children>
+                        <Label styleClass="form-title" text="EduSmart Learning Dashboard" />
+                        <Label styleClass="form-subtitle" text="Welcome to your centralized classroom manager. Quick statistics at a glance." />
+                     </children>
+                  </VBox>
+                  
+                  <!-- Dashboard Grid Mockups -->
+                  <HBox spacing="20.0" VBox.vgrow="NEVER">
+                     <children>
+                        <!-- Card 1 -->
+                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <Label text="📚">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label styleClass="field-label" text="My Courses" />
+                              <Label styleClass="form-title" text="12" />
+                              <Label styleClass="helper-header" text="4 ACTIVE SEMESTERS" />
+                           </children>
+                        </VBox>
+                        
+                        <!-- Card 2 -->
+                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <Label text="👥">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label styleClass="field-label" text="Total Students" />
+                              <Label styleClass="form-title" text="1,248" />
+                              <Label styleClass="helper-header" text="+48 THIS WEEK" />
+                           </children>
+                        </VBox>
+                        
+                        <!-- Card 3 -->
+                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <Label text="📈">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label styleClass="field-label" text="System Status" />
+                              <Label styleClass="form-title" text="Optimal" textFill="#10b981"/>
+                              <Label styleClass="helper-header" text="H2 DB &amp; SPRING ONLINE" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  
+                  <!-- Subtitle section -->
+                  <VBox spacing="10.0" styleClass="helper-card" VBox.vgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label styleClass="field-label" text="Sprint 1 Functional Checklist Verification" />
+                        <Label styleClass="helper-credential" text="✅ H2 persistent DB file-mode active: data stored under './edusmart.mv.db'" />
+                        <Label styleClass="helper-credential" text="✅ Spring Security programmatic authentication checking input password match" />
+                        <Label styleClass="helper-credential" text="✅ Spring Bean Injection: this controller is auto-wired via Spring Context" />
+                        <Label styleClass="helper-credential" text="✅ Validation: empty checks, database lookup, and BCrypt encryption verified" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>

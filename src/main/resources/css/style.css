@@ -1,0 +1,166 @@
+/* Modern UI Design System for EduSmart application */
+
+/* --- Font Settings --- */
+.root {
+    -fx-font-family: 'Segoe UI', 'Inter', 'Outfit', Helvetica, Arial, sans-serif;
+    -fx-primary-color: #6366f1; /* Indigo */
+    -fx-primary-dark: #4f46e5;
+    -fx-secondary-color: #a855f7; /* Purple */
+    -fx-dark-bg: #09090b; /* Zinc 950 */
+    -fx-form-bg: #18181b; /* Zinc 900 */
+    -fx-border-color-muted: #27272a; /* Zinc 800 */
+    -fx-border-color-focus: #818cf8; /* Light Indigo */
+    -fx-text-primary: #fafafa;
+    -fx-text-muted: #a1a1aa;
+    -fx-error-color: #ef4444; /* Rose Red */
+}
+
+/* --- Container Layouts --- */
+.root-container {
+    -fx-background-color: -fx-dark-bg;
+}
+
+/* Left Sidebar Branding with Linear Gradient */
+.brand-sidebar {
+    -fx-background-color: linear-gradient(to bottom right, #1e1b4b, #312e81, #4f46e5);
+    -fx-border-color: transparent -fx-border-color-muted transparent transparent;
+    -fx-border-width: 1px;
+}
+
+.brand-icon {
+    -fx-text-fill: -fx-text-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(168, 85, 247, 0.4), 15, 0, 0, 0);
+}
+
+.brand-title {
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1px;
+}
+
+.brand-subtitle {
+    -fx-text-fill: #c7d2fe; /* Light indigo-blue */
+    -fx-font-size: 13px;
+    -fx-alignment: center;
+}
+
+/* Sidebar Information Box */
+.brand-info-card {
+    -fx-background-color: rgba(15, 23, 42, 0.4); /* Glassmorphism effect */
+    -fx-background-radius: 12px;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
+    -fx-max-width: 260px;
+}
+
+.info-header {
+    -fx-text-fill: #a5b4fc;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1.5px;
+}
+
+.info-item {
+    -fx-text-fill: #e0e7ff;
+    -fx-font-size: 11px;
+}
+
+/* Form Container on the Right */
+.form-container {
+    -fx-background-color: -fx-form-bg;
+}
+
+.form-title {
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.form-subtitle {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 13px;
+}
+
+/* --- Input Fields --- */
+.field-label {
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.modern-text-field {
+    -fx-background-color: #27272a; /* Zinc 800 */
+    -fx-background-radius: 8px;
+    -fx-border-color: -fx-border-color-muted;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1.5px;
+    -fx-text-fill: -fx-text-primary;
+    -fx-prompt-text-fill: #71717a;
+    -fx-padding: 10px 14px 10px 14px;
+    -fx-font-size: 13px;
+    -fx-transition: border-color 0.2s ease-in-out;
+}
+
+.modern-text-field:focused {
+    -fx-border-color: -fx-border-color-focus;
+    -fx-background-color: #1e1b4b; /* Subtle dark-blue on focus */
+    -fx-effect: dropshadow(three-pass-box, rgba(99, 102, 241, 0.15), 8, 0, 0, 0);
+}
+
+/* --- Validation / Error Message --- */
+.error-feedback {
+    -fx-text-fill: -fx-error-color;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(239, 68, 68, 0.1);
+    -fx-padding: 8px 12px 8px 12px;
+    -fx-background-radius: 6px;
+    -fx-border-color: rgba(239, 68, 68, 0.2);
+    -fx-border-radius: 6px;
+    -fx-border-width: 1px;
+}
+
+/* --- Buttons --- */
+.login-button {
+    -fx-background-color: linear-gradient(to right, -fx-primary-color, -fx-secondary-color);
+    -fx-background-radius: 8px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(99, 102, 241, 0.3), 10, 0, 0, 3);
+}
+
+.login-button:hover {
+    -fx-background-color: linear-gradient(to right, -fx-primary-dark, -fx-secondary-color);
+    -fx-effect: dropshadow(three-pass-box, rgba(168, 85, 247, 0.45), 12, 0, 0, 4);
+}
+
+.login-button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* --- Developer Helper Card --- */
+.helper-card {
+    -fx-background-color: #27272a;
+    -fx-background-radius: 8px;
+    -fx-border-color: -fx-border-color-muted;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+}
+
+.helper-header {
+    -fx-text-fill: -fx-primary-color;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1px;
+}
+
+.helper-credential {
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}

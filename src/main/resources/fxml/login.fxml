@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox fx:id="rootPane" prefHeight="500.0" prefWidth="800.0" styleClass="root-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edusmart.ui.LoginController">
+   <children>
+      <!-- Left Side: Branding Sidebar (Gradient Background) -->
+      <VBox alignment="CENTER" prefHeight="500.0" prefWidth="320.0" styleClass="brand-sidebar" spacing="20.0" HBox.hgrow="NEVER">
+         <children>
+            <VBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <!-- Academic Cap Unicode Icon -->
+                  <Label styleClass="brand-icon" text="🎓">
+                     <font>
+                        <Font size="72.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="brand-title" text="EduSmart">
+                     <font>
+                        <Font name="System Bold" size="34.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="brand-subtitle" text="Smart Learning Management System" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            
+            <!-- Meta Information Card -->
+            <VBox alignment="CENTER_LEFT" spacing="8.0" styleClass="brand-info-card">
+               <children>
+                  <Label styleClass="info-header" text="SYSTEM METADATA" />
+                  <Label styleClass="info-item" text="• Architecture: Spring Boot + JavaFX" />
+                  <Label styleClass="info-item" text="• Database: H2 Engine (Persistent)" />
+                  <Label styleClass="info-item" text="• Security: Spring Security 6 &amp; BCrypt" />
+                  <Label styleClass="info-item" text="• Patterns: Clean MVC &amp; 4 OOP Pillars" />
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="18.0" right="18.0" top="15.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </VBox>
+         </children>
+      </VBox>
+      
+      <!-- Right Side: Clean Login Form -->
+      <VBox alignment="CENTER_LEFT" prefHeight="500.0" prefWidth="480.0" styleClass="form-container" spacing="24.0" HBox.hgrow="ALWAYS">
+         <padding>
+            <Insets bottom="40.0" left="50.0" right="50.0" top="40.0" />
+         </padding>
+         <children>
+            <VBox spacing="4.0">
+               <children>
+                  <Label styleClass="form-title" text="Welcome Back">
+                     <font>
+                        <Font name="System Bold" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="form-subtitle" text="Please sign in to access your course panel" />
+               </children>
+            </VBox>
+            
+            <!-- Input Form Fields -->
+            <VBox spacing="16.0">
+               <children>
+                  <!-- Username Field -->
+                  <VBox spacing="6.0">
+                     <children>
+                        <Label styleClass="field-label" text="Username" />
+                        <TextField fx:id="usernameField" promptText="Enter your username" styleClass="modern-text-field" />
+                     </children>
+                  </VBox>
+                  
+                  <!-- Password Field -->
+                  <VBox spacing="6.0">
+                     <children>
+                        <Label styleClass="field-label" text="Password" />
+                        <PasswordField fx:id="passwordField" promptText="Enter your password" styleClass="modern-text-field" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            
+            <!-- Error Indicator Label -->
+            <Label fx:id="errorLabel" styleClass="error-feedback" text="" wrapText="true" visible="false" managed="false"/>
+            
+            <!-- Action Button -->
+            <Button fx:id="loginButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogin" prefHeight="44.0" styleClass="login-button" text="Sign In" />
+            
+            <!-- Developer Credentials Helper -->
+            <VBox spacing="6.0" styleClass="helper-card">
+               <padding>
+                  <Insets bottom="12.0" left="15.0" right="15.0" top="12.0" />
+               </padding>
+               <children>
+                  <Label styleClass="helper-header" text="DEMO ACCOUNTS (Password: password123)" />
+                  <HBox spacing="14.0">
+                     <children>
+                        <Label styleClass="helper-credential" text="🔑 admin" />
+                        <Label styleClass="helper-credential" text="🔑 instructor" />
+                        <Label styleClass="helper-credential" text="🔑 student" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</HBox>
