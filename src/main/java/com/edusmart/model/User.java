@@ -17,6 +17,9 @@ public class User extends UserBase {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, columnDefinition = "int default 0")
+    private int points = 0;
+
     public User() {}
 
     public User(String username, String email, String password, String role) {
@@ -24,6 +27,7 @@ public class User extends UserBase {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.points = 0;
     }
 
     public String getUsername() {
@@ -48,6 +52,14 @@ public class User extends UserBase {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 
     @Override
