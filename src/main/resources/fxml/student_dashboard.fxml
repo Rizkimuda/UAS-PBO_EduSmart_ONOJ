@@ -91,6 +91,29 @@
                      </VBox.margin>
                   </VBox>
                   
+                  <!-- Tab: ENROLLED CLASS LIST -->
+                  <HBox fx:id="enrolledClassTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showEnrolledClassListView" spacing="14.0" styleClass="sidebar-tab">
+                     <padding>
+                        <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                     </padding>
+                     <children>
+                        <Label styleClass="tab-icon" text="📖" style="-fx-font-size: 18px;" />
+                        <VBox spacing="1.0">
+                           <children>
+                              <Label styleClass="tab-title" text="KELAS YANG DIAMBIL" />
+                              <Label styleClass="tab-subtitle" text="Kelas yang Diikuti" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <!-- Separator line (Divider) -->
+                  <VBox prefHeight="1" minHeight="1" maxHeight="1" styleClass="sidebar-divider">
+                     <VBox.margin>
+                        <Insets top="4" bottom="4" left="16" right="16"/>
+                     </VBox.margin>
+                  </VBox>
+                  
                   <!-- Tab: CLASS LIST -->
                   <HBox fx:id="classListTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showClassListView" spacing="14.0" styleClass="sidebar-tab">
                      <padding>
@@ -101,7 +124,7 @@
                         <VBox spacing="1.0">
                            <children>
                               <Label styleClass="tab-title" text="DAFTAR KELAS" />
-                              <Label styleClass="tab-subtitle" text="Kursus Yang Diikuti" />
+                              <Label styleClass="tab-subtitle" text="Kelas yang Tersedia" />
                            </children>
                         </VBox>
                      </children>
@@ -152,6 +175,11 @@
                      <children>
                         <Label fx:id="welcomeLabel" styleClass="form-title" text="Selamat datang kembali, Siswa!" />
                         <Label styleClass="form-subtitle" text="Berikut adalah ringkasan pembelajaran dan status verifikasi akademik Anda." />
+                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                           <VBox.margin>
+                              <Insets top="12.0" />
+                           </VBox.margin>
+                        </VBox>
                      </children>
                   </VBox>
                   
@@ -201,6 +229,40 @@
                </children>
             </VBox>
             
+            <!-- Tab View 4: ENROLLED CLASS LIST -->
+            <VBox fx:id="enrolledClassListView" spacing="20.0" visible="false" managed="false">
+               <padding>
+                  <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+               </padding>
+               <children>
+                  
+                  <!-- Enrolled Class List Header -->
+                  <VBox spacing="4.0">
+                     <children>
+                        <Label styleClass="form-title" text="Kelas Yang Diambil" />
+                        <Label styleClass="form-subtitle" text="Jelajahi kelas yang sedang Anda ikuti." />
+                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                           <VBox.margin>
+                              <Insets top="12.0" />
+                           </VBox.margin>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Scrollable Container for Dynamic Enrolled Classes -->
+                  <ScrollPane fitToWidth="true" styleClass="course-scroll-pane" VBox.vgrow="ALWAYS">
+                     <content>
+                        <FlowPane fx:id="enrolledCourseListContainer" hgap="24.0" vgap="24.0" style="-fx-background-color: transparent;">
+                           <padding>
+                              <Insets bottom="10.0" left="4.0" right="4.0" top="10.0" />
+                           </padding>
+                        </FlowPane>
+                     </content>
+                  </ScrollPane>
+                  
+               </children>
+            </VBox>
+
             <!-- Tab View 2: CLASS LIST -->
             <VBox fx:id="classListView" spacing="20.0" visible="false" managed="false">
                <padding>
@@ -211,8 +273,13 @@
                   <!-- Class List Header -->
                   <VBox spacing="4.0">
                      <children>
-                        <Label styleClass="form-title" text="Kursus Terdaftar Saya" />
-                        <Label styleClass="form-subtitle" text="Jelajahi kursus terdaftar Anda, materi, dan selesaikan tugas." />
+                        <Label styleClass="form-title" text="Daftar Kelas" />
+                        <Label styleClass="form-subtitle" text="Kelas yang Tersedia" />
+                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                           <VBox.margin>
+                              <Insets top="12.0" />
+                           </VBox.margin>
+                        </VBox>
                      </children>
                   </VBox>
                   
@@ -241,6 +308,11 @@
                      <children>
                         <Label styleClass="form-title" text="Profil Siswa" />
                         <Label styleClass="form-subtitle" text="Kelola informasi akun Anda dan unggah foto profil." />
+                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                           <VBox.margin>
+                              <Insets top="12.0" />
+                           </VBox.margin>
+                        </VBox>
                      </children>
                   </VBox>
 
@@ -286,11 +358,11 @@
                   <!-- Enrolled Classes Section in Profile -->
                   <VBox spacing="12.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Daftar Kelas yang Diikuti" />
+                        <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Daftar Kelas yang Selesai Diikuti" />
                         <VBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS" style="-fx-border-color: #cbd5e1; -fx-border-style: dashed; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-color: #ffffff; -fx-padding: 30px;">
                            <children>
                               <Label text="📚" style="-fx-font-size: 32px;" />
-                              <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Tidak ada kelas yang diambil" />
+                              <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Tidak ada kelas yang selesai diikuti" />
                            </children>
                         </VBox>
                      </children>

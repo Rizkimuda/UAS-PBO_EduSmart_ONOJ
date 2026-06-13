@@ -3,8 +3,10 @@ package com.edusmart.ui;
 import com.edusmart.JavaFXApplication;
 import com.edusmart.model.Enrollment;
 import com.edusmart.model.User;
+import com.edusmart.model.CourseStatus;
 import com.edusmart.repository.EnrollmentRepository;
 import com.edusmart.repository.UserRepository;
+import com.edusmart.repository.CourseRepository;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -81,12 +83,23 @@ public class StudentDashboardController {
     @FXML
     private FlowPane courseListContainer;
 
+    @FXML
+    private HBox enrolledClassTabBtn;
+
+    @FXML
+    private VBox enrolledClassListView;
+
+    @FXML
+    private FlowPane enrolledCourseListContainer;
+
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
-    public StudentDashboardController(EnrollmentRepository enrollmentRepository, UserRepository userRepository) {
+    public StudentDashboardController(EnrollmentRepository enrollmentRepository, UserRepository userRepository, CourseRepository courseRepository) {
         this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
     }
 
     public static void setSessionUser(User user) {
@@ -115,7 +128,8 @@ public class StudentDashboardController {
                     .count();
             completedCountLabel.setText(String.valueOf(completedCount));
 
-            populateCourseList(enrollments);
+            populateAvailableCourses();
+            populateEnrolledCourses(enrollments);
             loadProfilePicture();
         }
     }
@@ -175,8 +189,127 @@ public class StudentDashboardController {
         imageView.setImage(image);
     }
 
-    private void populateCourseList(List<Enrollment> enrollments) {
+    private void populateAvailableCourses() {
         courseListContainer.getChildren().clear();
+        
+        List<com.edusmart.model.Course> courses = courseRepository.findByStatus(com.edusmart.model.CourseStatus.PUBLISHED);
+        
+        if (courses.isEmpty()) {
+            VBox emptyContainer = new VBox();
+            emptyContainer.setSpacing(10.0);
+            emptyContainer.setAlignment(javafx.geometry.Pos.CENTER);
+            emptyContainer.setPadding(new Insets(30.0));
+            emptyContainer.setStyle("-fx-border-color: #cbd5e1; -fx-border-style: dashed; -fx-border-width: 2px; -fx-border-radius: 8px;");
+
+            Label emptyLabel = new Label("📚 Tidak ada kelas yang tersedia saat ini.");
+            emptyLabel.getStyleClass().add("field-label");
+            emptyLabel.setStyle("-fx-font-size: 15px;");
+
+            emptyContainer.getChildren().add(emptyLabel);
+            courseListContainer.getChildren().add(emptyContainer);
+            return;
+        }
+
+        // Get student enrolled course IDs to check enrollment status
+        List<Enrollment> enrollments = enrollmentRepository.findByUser(sessionUser);
+        List<Long> enrolledCourseIds = enrollments.stream()
+                .map(e -> e.getCourse().getId())
+                .toList();
+
+        for (com.edusmart.model.Course course : courses) {
+            VBox card = new VBox();
+            card.getStyleClass().add("course-grid-card");
+            
+            // 1. Banner
+            StackPane banner = new StackPane();
+            banner.getStyleClass().add("course-card-banner");
+            banner.setStyle(getBannerStyle(course.getCategory()));
+            
+            // 2. Card Body
+            VBox body = new VBox();
+            body.getStyleClass().add("course-card-body");
+            
+            // Title
+            Label titleLabel = new Label(course.getTitle());
+            titleLabel.getStyleClass().add("course-card-title");
+            
+            // Category Badge
+            Label categoryLabel = new Label(course.getCategory());
+            categoryLabel.getStyleClass().add("course-card-category-badge");
+            
+            // Instructor Row
+            HBox instructorRow = new HBox();
+            instructorRow.getStyleClass().add("course-card-instructor");
+            
+            // Circular Avatar Container for Instructor
+            StackPane avatarCircle = new StackPane();
+            avatarCircle.getStyleClass().add("course-card-instructor-avatar");
+            
+            Label avatarTxt = new Label("👤");
+            avatarTxt.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+            avatarCircle.getChildren().add(avatarTxt);
+            
+            if (course.getInstructor() != null && course.getInstructor().getProfilePicture() != null) {
+                try {
+                    File picFile = new File(course.getInstructor().getProfilePicture());
+                    if (picFile.exists()) {
+                        ImageView iv = new ImageView(new Image(picFile.toURI().toString()));
+                        double w = iv.getImage().getWidth();
+                        double h = iv.getImage().getHeight();
+                        double side = Math.min(w, h);
+                        iv.setViewport(new Rectangle2D((w - side)/2.0, (h - side)/2.0, side, side));
+                        iv.setFitWidth(28.0);
+                        iv.setFitHeight(28.0);
+                        
+                        Circle c = new Circle(14.0, 14.0, 14.0);
+                        iv.setClip(c);
+                        
+                        avatarTxt.setVisible(false);
+                        avatarCircle.getChildren().add(iv);
+                    }
+                } catch (Exception ex) {
+                    // Ignore
+                }
+            }
+            
+            String instructorName = (course.getInstructor() != null) ? course.getInstructor().getUsername() : "Tidak diketahui";
+            Label nameLabel = new Label(instructorName);
+            nameLabel.getStyleClass().add("course-card-instructor-name");
+            
+            instructorRow.getChildren().addAll(avatarCircle, nameLabel);
+            
+            // Action Button
+            HBox btn = new HBox();
+            boolean isEnrolled = enrolledCourseIds.contains(course.getId());
+            
+            if (isEnrolled) {
+                Label btnTxt = new Label("Sudah Terdaftar");
+                btnTxt.setStyle("-fx-text-fill: #065f46; -fx-font-weight: bold;");
+                btn.getChildren().add(btnTxt);
+                btn.setStyle("-fx-background-color: #d1fae5; -fx-border-color: #a7f3d0; -fx-border-width: 1px; -fx-border-style: solid; -fx-background-radius: 6px; -fx-padding: 8px 16px;");
+            } else {
+                btn.getStyleClass().add("course-card-button");
+                Label btnTxt = new Label("Enroll Kelas");
+                btnTxt.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+                Label btnArrow = new Label(" →");
+                btnArrow.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+                btn.getChildren().addAll(btnTxt, btnArrow);
+                
+                // Add click event for enrollment
+                btn.setOnMouseClicked(event -> handleEnrollCourse(course));
+            }
+            btn.setAlignment(javafx.geometry.Pos.CENTER);
+            
+            // Assemble Card
+            body.getChildren().addAll(titleLabel, categoryLabel, instructorRow, btn);
+            card.getChildren().addAll(banner, body);
+            
+            courseListContainer.getChildren().add(card);
+        }
+    }
+
+    private void populateEnrolledCourses(List<Enrollment> enrollments) {
+        enrolledCourseListContainer.getChildren().clear();
         
         if (enrollments.isEmpty()) {
             VBox emptyContainer = new VBox();
@@ -185,15 +318,15 @@ public class StudentDashboardController {
             emptyContainer.setPadding(new Insets(30.0));
             emptyContainer.setStyle("-fx-border-color: #cbd5e1; -fx-border-style: dashed; -fx-border-width: 2px; -fx-border-radius: 8px;");
 
-            Label emptyLabel = new Label("📚 Anda belum terdaftar di kelas mana pun.");
+            Label emptyLabel = new Label("📚 Anda belum mengambil kelas apa pun.");
             emptyLabel.getStyleClass().add("field-label");
             emptyLabel.setStyle("-fx-font-size: 15px;");
 
-            Label emptySubtitle = new Label("Kursus yang terdaftar akan muncul di sini beserta progres belajar Anda.");
+            Label emptySubtitle = new Label("Daftar kelas yang Anda ikuti akan muncul di sini.");
             emptySubtitle.getStyleClass().add("helper-credential");
 
             emptyContainer.getChildren().addAll(emptyLabel, emptySubtitle);
-            courseListContainer.getChildren().add(emptyContainer);
+            enrolledCourseListContainer.getChildren().add(emptyContainer);
             return;
         }
 
@@ -251,7 +384,7 @@ public class StudentDashboardController {
                         avatarCircle.getChildren().add(iv);
                     }
                 } catch (Exception ex) {
-                    // Ignore and fallback
+                    // Ignore
                 }
             }
             
@@ -261,11 +394,32 @@ public class StudentDashboardController {
             
             instructorRow.getChildren().addAll(avatarCircle, nameLabel);
             
-            // Enrol Button
+            // Progress Bar & Percentage
+            VBox progressBox = new VBox();
+            progressBox.setSpacing(6.0);
+            
+            HBox progressLabelRow = new HBox();
+            progressLabelRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            Label progressTitle = new Label("Progres belajar");
+            progressTitle.setStyle("-fx-font-size: 10px; -fx-text-fill: #64748b;");
+            Label progressPercent = new Label(enrollment.getProgressPercent() + "%");
+            progressPercent.setStyle("-fx-font-size: 10px; -fx-text-fill: #2563eb; -fx-font-weight: bold;");
+            HBox spacer = new HBox();
+            HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+            progressLabelRow.getChildren().addAll(progressTitle, spacer, progressPercent);
+            
+            ProgressBar progressBar = new ProgressBar(enrollment.getProgressPercent() / 100.0);
+            progressBar.setMaxWidth(Double.MAX_VALUE);
+            progressBar.setPrefHeight(6.0);
+            progressBar.getStyleClass().add("xp-progress-bar");
+            
+            progressBox.getChildren().addAll(progressLabelRow, progressBar);
+            
+            // Action Button
             HBox btn = new HBox();
             btn.getStyleClass().add("course-card-button");
             
-            Label btnTxt = new Label("Enroll Kelas");
+            Label btnTxt = new Label("Buka Kelas");
             btnTxt.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
             Label btnArrow = new Label(" →");
             btnArrow.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
@@ -274,10 +428,32 @@ public class StudentDashboardController {
             btn.setAlignment(javafx.geometry.Pos.CENTER);
             
             // Assemble Card
-            body.getChildren().addAll(titleLabel, categoryLabel, instructorRow, btn);
+            body.getChildren().addAll(titleLabel, categoryLabel, instructorRow, progressBox, btn);
             card.getChildren().addAll(banner, body);
             
-            courseListContainer.getChildren().add(card);
+            enrolledCourseListContainer.getChildren().add(card);
+        }
+    }
+
+    private void handleEnrollCourse(com.edusmart.model.Course course) {
+        try {
+            Enrollment newEnrollment = new Enrollment(sessionUser, course);
+            newEnrollment.setProgressPercent(0);
+            newEnrollment.setCreatedAt(java.time.LocalDateTime.now());
+            newEnrollment.setUpdatedAt(java.time.LocalDateTime.now());
+            
+            enrollmentRepository.save(newEnrollment);
+            
+            // Refresh views
+            List<Enrollment> enrollments = enrollmentRepository.findByUser(sessionUser);
+            enrolledCountLabel.setText(String.valueOf(enrollments.size()));
+            
+            populateAvailableCourses();
+            populateEnrolledCourses(enrollments);
+            
+            System.out.println("DEBUG: Enrolled in course: " + course.getTitle());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -297,64 +473,62 @@ public class StudentDashboardController {
         }
     }
 
-    @FXML
-    public void showHomeView(Event event) {
-        homeView.setVisible(true);
-        homeView.setManaged(true);
+    private void switchTab(HBox activeTab, VBox activeView) {
+        // Reset all tabs
+        resetTabStyle(homeTabBtn);
+        resetTabStyle(enrolledClassTabBtn);
+        resetTabStyle(classListTabBtn);
+        
+        // Set active tab
+        if (activeTab != null) {
+            activeTab.getStyleClass().remove("sidebar-tab");
+            if (!activeTab.getStyleClass().contains("active-sidebar-tab")) {
+                activeTab.getStyleClass().add("active-sidebar-tab");
+            }
+        }
+        
+        // Hide all views
+        homeView.setVisible(false);
+        homeView.setManaged(false);
+        enrolledClassListView.setVisible(false);
+        enrolledClassListView.setManaged(false);
         classListView.setVisible(false);
         classListView.setManaged(false);
         profileView.setVisible(false);
         profileView.setManaged(false);
+        
+        // Show active view
+        if (activeView != null) {
+            activeView.setVisible(true);
+            activeView.setManaged(true);
+        }
+    }
 
-        // Update tab styles
-        updateTabStyles(homeTabBtn, classListTabBtn);
+    private void resetTabStyle(HBox tabBtn) {
+        tabBtn.getStyleClass().remove("active-sidebar-tab");
+        if (!tabBtn.getStyleClass().contains("sidebar-tab")) {
+            tabBtn.getStyleClass().add("sidebar-tab");
+        }
+    }
+
+    @FXML
+    public void showHomeView(Event event) {
+        switchTab(homeTabBtn, homeView);
+    }
+
+    @FXML
+    public void showEnrolledClassListView(Event event) {
+        switchTab(enrolledClassTabBtn, enrolledClassListView);
     }
 
     @FXML
     public void showClassListView(Event event) {
-        homeView.setVisible(false);
-        homeView.setManaged(false);
-        classListView.setVisible(true);
-        classListView.setManaged(true);
-        profileView.setVisible(false);
-        profileView.setManaged(false);
-
-        // Update tab styles
-        updateTabStyles(classListTabBtn, homeTabBtn);
-    }
-
-    private void updateTabStyles(HBox activeTab, HBox inactiveTab) {
-        activeTab.getStyleClass().remove("sidebar-tab");
-        if (!activeTab.getStyleClass().contains("active-sidebar-tab")) {
-            activeTab.getStyleClass().add("active-sidebar-tab");
-        }
-
-        inactiveTab.getStyleClass().remove("active-sidebar-tab");
-        if (!inactiveTab.getStyleClass().contains("sidebar-tab")) {
-            inactiveTab.getStyleClass().add("sidebar-tab");
-        }
+        switchTab(classListTabBtn, classListView);
     }
 
     @FXML
     public void showProfileView(Event event) {
-        homeView.setVisible(false);
-        homeView.setManaged(false);
-        classListView.setVisible(false);
-        classListView.setManaged(false);
-        profileView.setVisible(true);
-        profileView.setManaged(true);
-
-        // Remove active class from tabs
-        homeTabBtn.getStyleClass().remove("active-sidebar-tab");
-        if (!homeTabBtn.getStyleClass().contains("sidebar-tab")) {
-            homeTabBtn.getStyleClass().add("sidebar-tab");
-        }
-
-        classListTabBtn.getStyleClass().remove("active-sidebar-tab");
-        if (!classListTabBtn.getStyleClass().contains("sidebar-tab")) {
-            classListTabBtn.getStyleClass().add("sidebar-tab");
-        }
-        
+        switchTab(null, profileView);
         // Load user info
         if (sessionUser != null) {
             profileUsernameLabel.setText(sessionUser.getUsername());

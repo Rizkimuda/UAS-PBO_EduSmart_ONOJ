@@ -17,6 +17,4 @@ VALUES (3, 'student', '$2a$10$mY8xN741ifT1R28mD9VbieEvotbVPhKjgt0uXz4mTZRkovw5OQ
 MERGE INTO courses (id, title, description, category, instructor_id, status, created_at, updated_at) KEY(id)
 VALUES (1, 'Mengelola Data untuk Analisis Trend', 'Pelajari konsep struktur modal dan diversifikasi pendapatan untuk keunggulan finansial korporat.', 'Data Science', 2, 'PUBLISHED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- Seed Enrollment
-MERGE INTO enrollments (id, user_id, course_id, progress_percent, created_at, updated_at) KEY(user_id, course_id)
-VALUES (1, 3, 1, 45, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
