@@ -18,7 +18,7 @@ public class Enrollment extends BaseEntity {
     private User user;
 
     @NotNull(message = "Course cannot be null")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 

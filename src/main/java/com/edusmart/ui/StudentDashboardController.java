@@ -15,7 +15,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
@@ -77,7 +79,7 @@ public class StudentDashboardController {
     private Label completedCountLabel;
 
     @FXML
-    private VBox courseListContainer;
+    private FlowPane courseListContainer;
 
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
@@ -198,49 +200,100 @@ public class StudentDashboardController {
         for (Enrollment enrollment : enrollments) {
             com.edusmart.model.Course course = enrollment.getCourse();
             
-            HBox card = new HBox();
-            card.getStyleClass().add("course-list-card");
-            card.setSpacing(20.0);
-            card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-            card.setPadding(new Insets(16.0, 20.0, 16.0, 20.0));
-
-            // Book icon
-            Label iconLabel = new Label("📚");
-            iconLabel.setStyle("-fx-font-size: 24px;");
-
-            // Info details
-            VBox infoBox = new VBox();
-            infoBox.setSpacing(4.0);
-            HBox.setHgrow(infoBox, javafx.scene.layout.Priority.ALWAYS);
-
+            VBox card = new VBox();
+            card.getStyleClass().add("course-grid-card");
+            
+            // 1. Banner
+            StackPane banner = new StackPane();
+            banner.getStyleClass().add("course-card-banner");
+            banner.setStyle(getBannerStyle(course.getCategory()));
+            
+            // 2. Card Body
+            VBox body = new VBox();
+            body.getStyleClass().add("course-card-body");
+            
+            // Title
             Label titleLabel = new Label(course.getTitle());
-            titleLabel.getStyleClass().add("field-label");
-            titleLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
-
+            titleLabel.getStyleClass().add("course-card-title");
+            
+            // Category Badge
+            Label categoryLabel = new Label(course.getCategory());
+            categoryLabel.getStyleClass().add("course-card-category-badge");
+            
+            // Instructor Row
+            HBox instructorRow = new HBox();
+            instructorRow.getStyleClass().add("course-card-instructor");
+            
+            // Circular Avatar Container for Instructor
+            StackPane avatarCircle = new StackPane();
+            avatarCircle.getStyleClass().add("course-card-instructor-avatar");
+            
+            Label avatarTxt = new Label("👤");
+            avatarTxt.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+            avatarCircle.getChildren().add(avatarTxt);
+            
+            if (course.getInstructor() != null && course.getInstructor().getProfilePicture() != null) {
+                try {
+                    File picFile = new File(course.getInstructor().getProfilePicture());
+                    if (picFile.exists()) {
+                        ImageView iv = new ImageView(new Image(picFile.toURI().toString()));
+                        double w = iv.getImage().getWidth();
+                        double h = iv.getImage().getHeight();
+                        double side = Math.min(w, h);
+                        iv.setViewport(new Rectangle2D((w - side)/2.0, (h - side)/2.0, side, side));
+                        iv.setFitWidth(28.0);
+                        iv.setFitHeight(28.0);
+                        
+                        Circle c = new Circle(14.0, 14.0, 14.0);
+                        iv.setClip(c);
+                        
+                        avatarTxt.setVisible(false);
+                        avatarCircle.getChildren().add(iv);
+                    }
+                } catch (Exception ex) {
+                    // Ignore and fallback
+                }
+            }
+            
             String instructorName = (course.getInstructor() != null) ? course.getInstructor().getUsername() : "Tidak diketahui";
-            Label descLabel = new Label("Kategori: " + course.getCategory() + " | Pengajar: " + instructorName);
-            descLabel.getStyleClass().add("helper-credential");
-
-            infoBox.getChildren().addAll(titleLabel, descLabel);
-
-            // Progress bar
-            VBox progressBox = new VBox();
-            progressBox.setSpacing(6.0);
-            progressBox.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
-            progressBox.setPrefWidth(180.0);
-
-            Label progressLabel = new Label("Progres: " + enrollment.getProgressPercent() + "%");
-            progressLabel.getStyleClass().add("helper-header");
-
-            ProgressBar progressBar = new ProgressBar(enrollment.getProgressPercent() / 100.0);
-            progressBar.setMaxWidth(Double.MAX_VALUE);
-            progressBar.setPrefHeight(6.0);
-            progressBar.getStyleClass().add("xp-progress-bar");
-
-            progressBox.getChildren().addAll(progressLabel, progressBar);
-
-            card.getChildren().addAll(iconLabel, infoBox, progressBox);
+            Label nameLabel = new Label(instructorName);
+            nameLabel.getStyleClass().add("course-card-instructor-name");
+            
+            instructorRow.getChildren().addAll(avatarCircle, nameLabel);
+            
+            // Enrol Button
+            HBox btn = new HBox();
+            btn.getStyleClass().add("course-card-button");
+            
+            Label btnTxt = new Label("Enroll Kelas");
+            btnTxt.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+            Label btnArrow = new Label(" →");
+            btnArrow.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+            
+            btn.getChildren().addAll(btnTxt, btnArrow);
+            btn.setAlignment(javafx.geometry.Pos.CENTER);
+            
+            // Assemble Card
+            body.getChildren().addAll(titleLabel, categoryLabel, instructorRow, btn);
+            card.getChildren().addAll(banner, body);
+            
             courseListContainer.getChildren().add(card);
+        }
+    }
+
+    private String getBannerStyle(String category) {
+        if (category == null) return "-fx-background-color: linear-gradient(to bottom right, #64748b, #475569); -fx-background-radius: 10px 10px 0px 0px;";
+        switch (category.toLowerCase()) {
+            case "data science":
+                return "-fx-background-color: linear-gradient(to bottom right, #a855f7, #6366f1); -fx-background-radius: 10px 10px 0px 0px;";
+            case "matematika":
+                return "-fx-background-color: linear-gradient(to bottom right, #3b82f6, #1d4ed8); -fx-background-radius: 10px 10px 0px 0px;";
+            case "ipa":
+                return "-fx-background-color: linear-gradient(to bottom right, #ec4899, #be185d); -fx-background-radius: 10px 10px 0px 0px;";
+            case "manajemen":
+                return "-fx-background-color: linear-gradient(to bottom right, #10b981, #047857); -fx-background-radius: 10px 10px 0px 0px;";
+            default:
+                return "-fx-background-color: linear-gradient(to bottom right, #64748b, #475569); -fx-background-radius: 10px 10px 0px 0px;";
         }
     }
 

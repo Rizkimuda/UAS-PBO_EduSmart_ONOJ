@@ -24,7 +24,7 @@ public class Course extends BaseEntity {
     private String category;
 
     @NotNull(message = "Instructor cannot be null")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id", nullable = false)
     private User instructor;
 
