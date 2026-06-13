@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox fx:id="rootPane" prefHeight="650.0" prefWidth="950.0" styleClass="root-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edusmart.ui.StudentDashboardController">
+   <children>
+      
+      <!-- Left Sidebar (Slate-900 / Stone-950 inspired) -->
+      <VBox prefWidth="280.0" styleClass="student-sidebar" HBox.hgrow="NEVER">
+         <children>
+            
+            <!-- Sidebar Header -->
+            <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="sidebar-header">
+               <padding>
+                  <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+               </padding>
+               <children>
+                  <Label styleClass="brand-header-icon" text="🎓" style="-fx-font-size: 26px;" />
+                  <Label styleClass="brand-header-title" text="EduSmart" style="-fx-font-size: 18px;" />
+               </children>
+            </HBox>
+            
+            <!-- Active Student Card (HabitForge inspired) -->
+            <VBox fx:id="activeStudentCard" spacing="10.0" styleClass="sidebar-user-card" onMouseClicked="#showProfileView" style="-fx-cursor: hand;">
+               <padding>
+                  <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets left="20.0" right="20.0" bottom="20.0" />
+               </VBox.margin>
+               <children>
+                  <Label styleClass="user-card-header" text="SISWA AKTIF" />
+                  
+                  <HBox alignment="CENTER_LEFT" spacing="12.0">
+                     <children>
+                        <!-- Circular Avatar -->
+                        <StackPane fx:id="avatarContainer" styleClass="avatar-circle-container">
+                           <children>
+                              <Label fx:id="avatarFallback" text="👤" style="-fx-font-size: 20px; -fx-text-fill: white;" />
+                              <ImageView fx:id="avatarImageView" fitWidth="36.0" fitHeight="36.0" preserveRatio="true" visible="false" managed="false" />
+                           </children>
+                        </StackPane>
+                        
+                        <VBox spacing="2.0">
+                           <children>
+                              <Label fx:id="usernameLabel" styleClass="user-card-username" text="Student" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            
+            <!-- Tab Menu Buttons -->
+            <VBox spacing="6.0" VBox.vgrow="ALWAYS">
+               <padding>
+                  <Insets left="14.0" right="14.0" />
+               </padding>
+               <children>
+                  
+                  <!-- Tab: HOME -->
+                  <HBox fx:id="homeTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showHomeView" spacing="14.0" styleClass="active-sidebar-tab">
+                     <padding>
+                        <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                     </padding>
+                     <children>
+                        <Label styleClass="tab-icon" text="🏠" style="-fx-font-size: 18px;" />
+                        <VBox spacing="1.0">
+                           <children>
+                              <Label styleClass="tab-title" text="BERANDA" />
+                              <Label styleClass="tab-subtitle" text="Ikhtisar Pembelajaran" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  
+                  <!-- Separator line (Divider) -->
+                  <VBox prefHeight="1" minHeight="1" maxHeight="1" styleClass="sidebar-divider">
+                     <VBox.margin>
+                        <Insets top="4" bottom="4" left="16" right="16"/>
+                     </VBox.margin>
+                  </VBox>
+                  
+                  <!-- Tab: CLASS LIST -->
+                  <HBox fx:id="classListTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showClassListView" spacing="14.0" styleClass="sidebar-tab">
+                     <padding>
+                        <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                     </padding>
+                     <children>
+                        <Label styleClass="tab-icon" text="📚" style="-fx-font-size: 18px;" />
+                        <VBox spacing="1.0">
+                           <children>
+                              <Label styleClass="tab-title" text="DAFTAR KELAS" />
+                              <Label styleClass="tab-subtitle" text="Kursus Yang Diikuti" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  
+               </children>
+            </VBox>
+            
+            <!-- Sidebar Footer with Logout & Metadata -->
+            <VBox spacing="14.0" alignment="BOTTOM_CENTER">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" />
+               </padding>
+               <children>
+                  
+                  <!-- Logout Tab -->
+                  <HBox alignment="CENTER_LEFT" onMouseClicked="#handleLogout" spacing="14.0" styleClass="sidebar-logout-tab">
+                     <padding>
+                        <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                     </padding>
+                     <children>
+                        <Label styleClass="logout-icon" text="🚪" style="-fx-font-size: 16px;" />
+                        <Label styleClass="logout-title" text="KELUAR" />
+                     </children>
+                  </HBox>
+                  
+                  <!-- Copyright Info -->
+                  <Label styleClass="sidebar-footer-text" text="© 2026 EduSmart. Hak Cipta Dilindungi." />
+               </children>
+            </VBox>
+            
+         </children>
+      </VBox>
+      
+      <!-- Right Main Workspace Content Area -->
+      <StackPane styleClass="form-container" HBox.hgrow="ALWAYS">
+         <children>
+            
+            <!-- Tab View 1: HOME -->
+            <VBox fx:id="homeView" spacing="28.0" visible="true" managed="true">
+               <padding>
+                  <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+               </padding>
+               <children>
+                  
+                  <!-- Dashboard Header Card -->
+                  <VBox spacing="4.0">
+                     <children>
+                        <Label fx:id="welcomeLabel" styleClass="form-title" text="Selamat datang kembali, Siswa!" />
+                        <Label styleClass="form-subtitle" text="Berikut adalah ringkasan pembelajaran dan status verifikasi akademik Anda." />
+                     </children>
+                  </VBox>
+                  
+                  <!-- Dashboard Stats Cards Grid -->
+                  <HBox spacing="20.0">
+                     <children>
+                        <!-- Card 1: Enrolled Courses -->
+                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <Label text="📚" style="-fx-font-size: 24px;" />
+                              <Label styleClass="field-label" text="Kursus Terdaftar" />
+                              <Label fx:id="enrolledCountLabel" styleClass="form-title" text="0" />
+                              <Label styleClass="helper-header" text="KELAS AKTIF" />
+                           </children>
+                        </VBox>
+                        
+                        <!-- Card 3: Completion Status -->
+                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <Label text="🏆" style="-fx-font-size: 24px;" />
+                              <Label styleClass="field-label" text="Kelas Selesai" />
+                              <Label fx:id="completedCountLabel" styleClass="form-title" text="0" textFill="#10b981" />
+                              <Label styleClass="helper-header" text="100% SELESAI" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  
+                  <!-- Info / Verification checklist card -->
+                  <VBox spacing="12.0" styleClass="helper-card" VBox.vgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label styleClass="field-label" text="Informasi Dasbor Pembelajaran Siswa Terverifikasi" />
+                        <Label styleClass="helper-credential" text="🎓 Status Peran: Dipetakan secara terprogram ke panel kelas siswa." />
+                        <Label styleClass="helper-credential" text="⚙️ Mesin Navigasi: Tata letak terpusat dengan bilah sisi yang bersih, tombol keluar, dan perpindahan tab." />
+                        <Label styleClass="helper-credential" text="📊 Kueri Real-Time: Kursus terdaftar dan progres kelas diambil secara dinamis dari basis data." />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            
+            <!-- Tab View 2: CLASS LIST -->
+            <VBox fx:id="classListView" spacing="20.0" visible="false" managed="false">
+               <padding>
+                  <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+               </padding>
+               <children>
+                  
+                  <!-- Class List Header -->
+                  <VBox spacing="4.0">
+                     <children>
+                        <Label styleClass="form-title" text="Kursus Terdaftar Saya" />
+                        <Label styleClass="form-subtitle" text="Jelajahi kursus terdaftar Anda, materi, dan selesaikan tugas." />
+                     </children>
+                  </VBox>
+                  
+                  <!-- Scrollable Container for Dynamic Classes -->
+                  <ScrollPane fitToWidth="true" styleClass="course-scroll-pane" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="courseListContainer" spacing="16.0" style="-fx-background-color: transparent;">
+                           <padding>
+                              <Insets bottom="10.0" left="4.0" right="4.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+                  
+               </children>
+            </VBox>
+            
+            <!-- Tab View 3: PROFILE -->
+            <VBox fx:id="profileView" spacing="28.0" visible="false" managed="false">
+               <padding>
+                  <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+               </padding>
+               <children>
+                  <!-- Profile Header -->
+                  <VBox spacing="4.0">
+                     <children>
+                        <Label styleClass="form-title" text="Profil Siswa" />
+                        <Label styleClass="form-subtitle" text="Kelola informasi akun Anda dan unggah foto profil." />
+                     </children>
+                  </VBox>
+
+                  <!-- Profile Details Card -->
+                  <HBox spacing="30.0" styleClass="helper-card" alignment="CENTER_LEFT">
+                     <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                     </padding>
+                     <children>
+                        <!-- Large Avatar Container -->
+                        <VBox spacing="12.0" alignment="CENTER">
+                           <children>
+                              <StackPane fx:id="largeAvatarContainer" styleClass="avatar-circle-container" style="-fx-min-width: 90px; -fx-min-height: 90px; -fx-max-width: 90px; -fx-max-height: 90px; -fx-background-radius: 45px; -fx-background-color: -fx-primary-color;">
+                                 <children>
+                                    <Label fx:id="largeAvatarFallback" text="👤" style="-fx-font-size: 50px; -fx-text-fill: white;" />
+                                    <ImageView fx:id="largeAvatarImageView" fitWidth="90.0" fitHeight="90.0" preserveRatio="true" visible="false" managed="false" />
+                                 </children>
+                              </StackPane>
+                              <Button onAction="#handleUploadProfilePicture" styleClass="login-button" style="-fx-font-size: 11px; -fx-padding: 6px 12px;" text="Ubah Foto Profil" />
+                           </children>
+                        </VBox>
+
+                        <!-- User Info -->
+                        <VBox spacing="14.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <VBox spacing="4.0">
+                                 <children>
+                                    <Label styleClass="user-card-xp-header" text="NAMA PENGGUNA" />
+                                    <Label fx:id="profileUsernameLabel" styleClass="user-card-username" style="-fx-font-size: 16px;" text="student" />
+                                 </children>
+                              </VBox>
+                              <VBox spacing="4.0">
+                                 <children>
+                                    <Label styleClass="user-card-xp-header" text="ALAMAT EMAIL" />
+                                    <Label fx:id="profileEmailLabel" styleClass="user-card-username" style="-fx-font-size: 14px; -fx-font-weight: normal;" text="student@edusmart.com" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+
+                  <!-- Enrolled Classes Section in Profile -->
+                  <VBox spacing="12.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Daftar Kelas yang Diikuti" />
+                        <VBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS" style="-fx-border-color: #cbd5e1; -fx-border-style: dashed; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-color: #ffffff; -fx-padding: 30px;">
+                           <children>
+                              <Label text="📚" style="-fx-font-size: 32px;" />
+                              <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Tidak ada kelas yang diambil" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            
+         </children>
+      </StackPane>
+   </children>
+</HBox>

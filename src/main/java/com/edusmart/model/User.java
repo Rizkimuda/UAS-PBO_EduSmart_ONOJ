@@ -20,6 +20,9 @@ public class User extends UserBase {
     @Column(nullable = false, columnDefinition = "int default 0")
     private int points = 0;
 
+    @Column(name = "profile_picture", nullable = true)
+    private String profilePicture;
+
     public User() {}
 
     public User(String username, String email, String password, String role) {
@@ -67,5 +70,13 @@ public class User extends UserBase {
         if (role == null) return "";
         // Polymorphism: strip ROLE_ prefix for a clean role name representation
         return role.replace("ROLE_", "");
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

@@ -37,7 +37,9 @@ public class JavaFXApplication extends Application {
         Parent root = loader.load();
         
         primaryStage.setTitle("EduSmart - E-Learning Platform");
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
