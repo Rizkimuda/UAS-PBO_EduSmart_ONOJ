@@ -149,4 +149,17 @@ public class LoginController {
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
     }
+
+    @FXML
+    public void navigateToRegister(Event event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
+            loader.setControllerFactory(JavaFXApplication.getContext()::getBean);
+            Parent root = loader.load();
+            JavaFXApplication.getPrimaryStage().getScene().setRoot(root);
+        } catch (IOException e) {
+            showError("Gagal memuat halaman registrasi: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }
