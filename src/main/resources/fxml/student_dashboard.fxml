@@ -18,144 +18,146 @@
       <!-- Left Sidebar (Slate-900 / Stone-950 inspired) -->
       <VBox fx:id="sidebar" prefWidth="280.0" minWidth="280.0" styleClass="student-sidebar" HBox.hgrow="NEVER">
          <children>
-            
-            <!-- Sidebar Header -->
-            <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="sidebar-header">
-               <padding>
-                  <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
-               </padding>
+            <VBox prefWidth="280.0" minWidth="280.0" maxWidth="280.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Label styleClass="brand-header-icon" text="🎓" style="-fx-font-size: 26px;" />
-                  <Label styleClass="brand-header-title" text="EduSmart" style="-fx-font-size: 18px;" />
-               </children>
-            </HBox>
-            
-            <!-- Active Student Card (HabitForge inspired) -->
-            <VBox fx:id="activeStudentCard" spacing="10.0" styleClass="sidebar-user-card" onMouseClicked="#showProfileView" style="-fx-cursor: hand;">
-               <padding>
-                  <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-               </padding>
-               <VBox.margin>
-                  <Insets left="20.0" right="20.0" bottom="20.0" />
-               </VBox.margin>
-               <children>
-                  <Label styleClass="user-card-header" text="SISWA AKTIF" />
-                  
-                  <HBox alignment="CENTER_LEFT" spacing="12.0">
+                  <!-- Sidebar Header -->
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="sidebar-header">
+                     <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                     </padding>
                      <children>
-                        <!-- Circular Avatar -->
-                        <StackPane fx:id="avatarContainer" styleClass="avatar-circle-container">
-                           <children>
-                              <Label fx:id="avatarFallback" text="👤" style="-fx-font-size: 20px; -fx-text-fill: white;" />
-                              <ImageView fx:id="avatarImageView" fitWidth="36.0" fitHeight="36.0" preserveRatio="true" visible="false" managed="false" />
-                           </children>
-                        </StackPane>
+                        <Label styleClass="brand-header-icon" text="🎓" style="-fx-font-size: 26px;" />
+                        <Label styleClass="brand-header-title" text="EduSmart" style="-fx-font-size: 18px;" />
+                     </children>
+                  </HBox>
+                  
+                  <!-- Active Student Card (HabitForge inspired) -->
+                  <VBox fx:id="activeStudentCard" spacing="10.0" styleClass="sidebar-user-card" onMouseClicked="#showProfileView" style="-fx-cursor: hand;">
+                     <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" bottom="20.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label styleClass="user-card-header" text="SISWA AKTIF" />
                         
-                        <VBox spacing="2.0">
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
                            <children>
-                              <Label fx:id="usernameLabel" styleClass="user-card-username" text="Student" />
+                              <!-- Circular Avatar -->
+                              <StackPane fx:id="avatarContainer" styleClass="avatar-circle-container">
+                                 <children>
+                                    <Label fx:id="avatarFallback" text="👤" style="-fx-font-size: 20px; -fx-text-fill: white;" />
+                                    <ImageView fx:id="avatarImageView" fitWidth="36.0" fitHeight="36.0" preserveRatio="true" visible="false" managed="false" />
+                                 </children>
+                              </StackPane>
+                              
+                              <VBox spacing="2.0">
+                                 <children>
+                                    <Label fx:id="usernameLabel" styleClass="user-card-username" text="Student" />
+                                 </children>
+                              </VBox>
                            </children>
-                        </VBox>
+                        </HBox>
                      </children>
-                  </HBox>
-               </children>
-            </VBox>
-            
-            <!-- Tab Menu Buttons -->
-            <VBox spacing="6.0" VBox.vgrow="ALWAYS">
-               <padding>
-                  <Insets left="14.0" right="14.0" />
-               </padding>
-               <children>
-                  
-                  <!-- Tab: HOME -->
-                  <HBox fx:id="homeTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showHomeView" spacing="14.0" styleClass="active-sidebar-tab">
-                     <padding>
-                        <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
-                     </padding>
-                     <children>
-                        <Label styleClass="tab-icon" text="🏠" style="-fx-font-size: 18px;" />
-                        <VBox spacing="1.0">
-                           <children>
-                              <Label styleClass="tab-title" text="BERANDA" />
-                              <Label styleClass="tab-subtitle" text="Ikhtisar Pembelajaran" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-                  
-                  <!-- Separator line (Divider) -->
-                  <VBox prefHeight="1" minHeight="1" maxHeight="1" styleClass="sidebar-divider">
-                     <VBox.margin>
-                        <Insets top="4" bottom="4" left="16" right="16"/>
-                     </VBox.margin>
                   </VBox>
                   
-                  <!-- Tab: ENROLLED CLASS LIST -->
-                  <HBox fx:id="enrolledClassTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showEnrolledClassListView" spacing="14.0" styleClass="sidebar-tab">
+                  <!-- Tab Menu Buttons -->
+                  <VBox spacing="6.0" VBox.vgrow="ALWAYS">
                      <padding>
-                        <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                        <Insets left="14.0" right="14.0" />
                      </padding>
                      <children>
-                        <Label styleClass="tab-icon" text="📖" style="-fx-font-size: 18px;" />
-                        <VBox spacing="1.0">
+                        
+                        <!-- Tab: HOME -->
+                        <HBox fx:id="homeTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showHomeView" spacing="14.0" styleClass="active-sidebar-tab">
+                           <padding>
+                              <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                           </padding>
                            <children>
-                              <Label styleClass="tab-title" text="KELAS YANG DIAMBIL" />
-                              <Label styleClass="tab-subtitle" text="Kelas yang Diikuti" />
+                              <Label styleClass="tab-icon" text="🏠" style="-fx-font-size: 18px;" />
+                              <VBox spacing="1.0">
+                                 <children>
+                                    <Label styleClass="tab-title" text="BERANDA" />
+                                    <Label styleClass="tab-subtitle" text="Ikhtisar Pembelajaran" />
+                                 </children>
+                              </VBox>
                            </children>
+                        </HBox>
+                        
+                        <!-- Separator line (Divider) -->
+                        <VBox prefHeight="1" minHeight="1" maxHeight="1" styleClass="sidebar-divider">
+                           <VBox.margin>
+                              <Insets top="4" bottom="4" left="16" right="16"/>
+                           </VBox.margin>
                         </VBox>
-                     </children>
-                  </HBox>
+                        
+                        <!-- Tab: ENROLLED CLASS LIST -->
+                        <HBox fx:id="enrolledClassTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showEnrolledClassListView" spacing="14.0" styleClass="sidebar-tab">
+                           <padding>
+                              <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                           </padding>
+                           <children>
+                              <Label styleClass="tab-icon" text="📖" style="-fx-font-size: 18px;" />
+                              <VBox spacing="1.0">
+                                 <children>
+                                    <Label styleClass="tab-title" text="KELAS YANG DIAMBIL" />
+                                    <Label styleClass="tab-subtitle" text="Kelas yang Diikuti" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
 
-                  <!-- Separator line (Divider) -->
-                  <VBox prefHeight="1" minHeight="1" maxHeight="1" styleClass="sidebar-divider">
-                     <VBox.margin>
-                        <Insets top="4" bottom="4" left="16" right="16"/>
-                     </VBox.margin>
+                        <!-- Separator line (Divider) -->
+                        <VBox prefHeight="1" minHeight="1" maxHeight="1" styleClass="sidebar-divider">
+                           <VBox.margin>
+                              <Insets top="4" bottom="4" left="16" right="16"/>
+                           </VBox.margin>
+                        </VBox>
+                        
+                        <!-- Tab: CLASS LIST -->
+                        <HBox fx:id="classListTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showClassListView" spacing="14.0" styleClass="sidebar-tab">
+                           <padding>
+                              <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                           </padding>
+                           <children>
+                              <Label styleClass="tab-icon" text="📚" style="-fx-font-size: 18px;" />
+                              <VBox spacing="1.0">
+                                 <children>
+                                    <Label styleClass="tab-title" text="DAFTAR KELAS" />
+                                    <Label styleClass="tab-subtitle" text="Kelas yang Tersedia" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        
+                     </children>
                   </VBox>
                   
-                  <!-- Tab: CLASS LIST -->
-                  <HBox fx:id="classListTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showClassListView" spacing="14.0" styleClass="sidebar-tab">
+                  <!-- Sidebar Footer with Logout & Metadata -->
+                  <VBox spacing="14.0" alignment="BOTTOM_CENTER">
                      <padding>
-                        <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                        <Insets bottom="20.0" left="20.0" right="20.0" />
                      </padding>
                      <children>
-                        <Label styleClass="tab-icon" text="📚" style="-fx-font-size: 18px;" />
-                        <VBox spacing="1.0">
+                        
+                        <!-- Logout Tab -->
+                        <HBox alignment="CENTER_LEFT" onMouseClicked="#handleLogout" spacing="14.0" styleClass="sidebar-logout-tab">
+                           <padding>
+                              <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                           </padding>
                            <children>
-                              <Label styleClass="tab-title" text="DAFTAR KELAS" />
-                              <Label styleClass="tab-subtitle" text="Kelas yang Tersedia" />
+                              <Label styleClass="logout-icon" text="🚪" style="-fx-font-size: 16px;" />
+                              <Label styleClass="logout-title" text="KELUAR" />
                            </children>
-                        </VBox>
+                        </HBox>
+                        
+                        <!-- Copyright Info -->
+                        <Label styleClass="sidebar-footer-text" text="© 2026 EduSmart. Hak Cipta Dilindungi." />
                      </children>
-                  </HBox>
-                  
+                  </VBox>
                </children>
             </VBox>
-            
-            <!-- Sidebar Footer with Logout & Metadata -->
-            <VBox spacing="14.0" alignment="BOTTOM_CENTER">
-               <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" />
-               </padding>
-               <children>
-                  
-                  <!-- Logout Tab -->
-                  <HBox alignment="CENTER_LEFT" onMouseClicked="#handleLogout" spacing="14.0" styleClass="sidebar-logout-tab">
-                     <padding>
-                        <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
-                     </padding>
-                     <children>
-                        <Label styleClass="logout-icon" text="🚪" style="-fx-font-size: 16px;" />
-                        <Label styleClass="logout-title" text="KELUAR" />
-                     </children>
-                  </HBox>
-                  
-                  <!-- Copyright Info -->
-                  <Label styleClass="sidebar-footer-text" text="© 2026 EduSmart. Hak Cipta Dilindungi." />
-               </children>
-            </VBox>
-            
          </children>
       </VBox>
       

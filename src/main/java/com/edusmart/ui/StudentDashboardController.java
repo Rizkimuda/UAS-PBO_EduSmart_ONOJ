@@ -51,11 +51,15 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.Alert;
 import javafx.event.ActionEvent;
+import javafx.animation.Transition;
+import javafx.util.Duration;
+import javafx.scene.shape.Rectangle;
 
 @Component
 public class StudentDashboardController {
 
     private static User sessionUser;
+    private Transition sidebarTransition;
 
     @FXML
     private Label usernameLabel;
@@ -1113,9 +1117,54 @@ public class StudentDashboardController {
     @FXML
     public void handleToggleSidebar(ActionEvent event) {
         if (sidebar != null) {
-            boolean isVisible = sidebar.isVisible();
-            sidebar.setVisible(!isVisible);
-            sidebar.setManaged(!isVisible);
+            if (sidebarTransition != null) {
+                sidebarTransition.stop();
+            }
+
+            boolean isCurrentlyExpanded = sidebar.isManaged() && sidebar.getPrefWidth() > 0;
+            
+            double startWidth = isCurrentlyExpanded ? 280.0 : 0.0;
+            double endWidth = isCurrentlyExpanded ? 0.0 : 280.0;
+            
+            if (!isCurrentlyExpanded) {
+                // Expanding
+                sidebar.setVisible(true);
+                sidebar.setManaged(true);
+            }
+            
+            Rectangle clip = new Rectangle();
+            clip.heightProperty().bind(sidebar.heightProperty());
+            sidebar.setClip(clip);
+            
+            sidebarTransition = new Transition() {
+                {
+                    setCycleDuration(Duration.millis(250));
+                }
+                
+                @Override
+                protected void interpolate(double fraction) {
+                    double currentWidth = startWidth + (endWidth - startWidth) * fraction;
+                    sidebar.setPrefWidth(currentWidth);
+                    sidebar.setMinWidth(currentWidth);
+                    sidebar.setMaxWidth(currentWidth);
+                    clip.setWidth(currentWidth);
+                }
+            };
+            
+            sidebarTransition.setOnFinished(e -> {
+                if (isCurrentlyExpanded) {
+                    // Collapsed
+                    sidebar.setVisible(false);
+                    sidebar.setManaged(false);
+                    sidebar.setClip(null);
+                } else {
+                    // Fully expanded, remove clip
+                    sidebar.setClip(null);
+                }
+                sidebarTransition = null;
+            });
+            
+            sidebarTransition.play();
         }
     }
 }
