@@ -16,7 +16,7 @@
    <children>
       
       <!-- Left Sidebar (Slate-900 / Stone-950 inspired) -->
-      <VBox prefWidth="280.0" styleClass="student-sidebar" HBox.hgrow="NEVER">
+      <VBox fx:id="sidebar" prefWidth="280.0" minWidth="280.0" styleClass="student-sidebar" HBox.hgrow="NEVER">
          <children>
             
             <!-- Sidebar Header -->
@@ -160,217 +160,383 @@
       </VBox>
       
       <!-- Right Main Workspace Content Area -->
-      <StackPane styleClass="form-container" HBox.hgrow="ALWAYS">
+      <VBox HBox.hgrow="ALWAYS">
          <children>
+            <!-- Workspace Top Header Bar -->
+            <HBox alignment="CENTER_LEFT" spacing="16.0" style="-fx-background-color: #ffffff; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1px 0; -fx-padding: 10px 24px;">
+               <children>
+                  <Button onAction="#handleToggleSidebar" text="☰" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16px; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 4px 8px;" />
+                  <Label text="EduSmart Learning Platform" style="-fx-font-size: 12px; -fx-text-fill: #64748b; -fx-font-weight: bold;" />
+               </children>
+            </HBox>
             
-            <!-- Tab View 1: HOME -->
-            <VBox fx:id="homeView" spacing="28.0" visible="true" managed="true">
-               <padding>
-                  <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
-               </padding>
+            <StackPane styleClass="form-container" VBox.vgrow="ALWAYS">
                <children>
                   
-                  <!-- Dashboard Header Card -->
-                  <VBox spacing="4.0">
+                  <!-- Tab View 1: HOME -->
+                  <VBox fx:id="homeView" spacing="28.0" visible="true" managed="true">
+                     <padding>
+                        <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+                     </padding>
                      <children>
-                        <Label fx:id="welcomeLabel" styleClass="form-title" text="Selamat datang kembali, Siswa!" />
-                        <Label styleClass="form-subtitle" text="Berikut adalah ringkasan pembelajaran dan status verifikasi akademik Anda." />
-                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
-                           <VBox.margin>
-                              <Insets top="12.0" />
-                           </VBox.margin>
-                        </VBox>
-                     </children>
-                  </VBox>
-                  
-                  <!-- Dashboard Stats Cards Grid -->
-                  <HBox spacing="20.0">
-                     <children>
-                        <!-- Card 1: Enrolled Courses -->
-                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
-                           <padding>
-                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                           </padding>
+                        
+                        <!-- Dashboard Header Card -->
+                        <VBox spacing="4.0">
                            <children>
-                              <Label text="📚" style="-fx-font-size: 24px;" />
-                              <Label styleClass="field-label" text="Kursus Terdaftar" />
-                              <Label fx:id="enrolledCountLabel" styleClass="form-title" text="0" />
-                              <Label styleClass="helper-header" text="KELAS AKTIF" />
+                              <Label fx:id="welcomeLabel" styleClass="form-title" text="Selamat datang kembali, Siswa!" />
+                              <Label styleClass="form-subtitle" text="Berikut adalah ringkasan pembelajaran dan status verifikasi akademik Anda." />
+                              <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                                 <VBox.margin>
+                                    <Insets top="12.0" />
+                                 </VBox.margin>
+                              </VBox>
                            </children>
                         </VBox>
                         
-                        <!-- Card 3: Completion Status -->
-                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                        <!-- Dashboard Stats Cards Grid -->
+                        <HBox spacing="20.0">
+                           <children>
+                              <!-- Card 1: Enrolled Courses -->
+                              <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                                 <children>
+                                    <Label text="📚" style="-fx-font-size: 24px;" />
+                                    <Label styleClass="field-label" text="Kursus Terdaftar" />
+                                    <Label fx:id="enrolledCountLabel" styleClass="form-title" text="0" />
+                                    <Label styleClass="helper-header" text="KELAS AKTIF" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Card 3: Completion Status -->
+                              <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                                 <children>
+                                    <Label text="🏆" style="-fx-font-size: 24px;" />
+                                    <Label styleClass="field-label" text="Kelas Selesai" />
+                                    <Label fx:id="completedCountLabel" styleClass="form-title" text="0" textFill="#10b981" />
+                                    <Label styleClass="helper-header" text="100% SELESAI" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        
+                        <!-- Info / Verification checklist card -->
+                        <VBox spacing="12.0" styleClass="helper-card" VBox.vgrow="ALWAYS">
                            <padding>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </padding>
                            <children>
-                              <Label text="🏆" style="-fx-font-size: 24px;" />
-                              <Label styleClass="field-label" text="Kelas Selesai" />
-                              <Label fx:id="completedCountLabel" styleClass="form-title" text="0" textFill="#10b981" />
-                              <Label styleClass="helper-header" text="100% SELESAI" />
+                              <Label styleClass="field-label" text="Informasi Dasbor Pembelajaran Siswa Terverifikasi" />
+                              <Label styleClass="helper-credential" text="🎓 Status Peran: Dipetakan secara terprogram ke panel kelas siswa." />
+                              <Label styleClass="helper-credential" text="⚙️ Mesin Navigasi: Tata letak terpusat dengan bilah sisi yang bersih, tombol keluar, dan perpindahan tab." />
+                              <Label styleClass="helper-credential" text="📊 Kueri Real-Time: Kursus terdaftar dan progres kelas diambil secara dinamis dari basis data." />
                            </children>
                         </VBox>
                      </children>
-                  </HBox>
+                  </VBox>
                   
-                  <!-- Info / Verification checklist card -->
-                  <VBox spacing="12.0" styleClass="helper-card" VBox.vgrow="ALWAYS">
+                  <!-- Tab View 4: ENROLLED CLASS LIST -->
+                  <VBox fx:id="enrolledClassListView" spacing="20.0" visible="false" managed="false">
                      <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
                      </padding>
                      <children>
-                        <Label styleClass="field-label" text="Informasi Dasbor Pembelajaran Siswa Terverifikasi" />
-                        <Label styleClass="helper-credential" text="🎓 Status Peran: Dipetakan secara terprogram ke panel kelas siswa." />
-                        <Label styleClass="helper-credential" text="⚙️ Mesin Navigasi: Tata letak terpusat dengan bilah sisi yang bersih, tombol keluar, dan perpindahan tab." />
-                        <Label styleClass="helper-credential" text="📊 Kueri Real-Time: Kursus terdaftar dan progres kelas diambil secara dinamis dari basis data." />
-                     </children>
-                  </VBox>
-               </children>
-            </VBox>
-            
-            <!-- Tab View 4: ENROLLED CLASS LIST -->
-            <VBox fx:id="enrolledClassListView" spacing="20.0" visible="false" managed="false">
-               <padding>
-                  <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
-               </padding>
-               <children>
-                  
-                  <!-- Enrolled Class List Header -->
-                  <VBox spacing="4.0">
-                     <children>
-                        <Label styleClass="form-title" text="Kelas Yang Diambil" />
-                        <Label styleClass="form-subtitle" text="Jelajahi kelas yang sedang Anda ikuti." />
-                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
-                           <VBox.margin>
-                              <Insets top="12.0" />
-                           </VBox.margin>
-                        </VBox>
-                     </children>
-                  </VBox>
-                  
-                  <!-- Scrollable Container for Dynamic Enrolled Classes -->
-                  <ScrollPane fitToWidth="true" styleClass="course-scroll-pane" VBox.vgrow="ALWAYS">
-                     <content>
-                        <FlowPane fx:id="enrolledCourseListContainer" hgap="24.0" vgap="24.0" style="-fx-background-color: transparent;">
-                           <padding>
-                              <Insets bottom="10.0" left="4.0" right="4.0" top="10.0" />
-                           </padding>
-                        </FlowPane>
-                     </content>
-                  </ScrollPane>
-                  
-               </children>
-            </VBox>
-
-            <!-- Tab View 2: CLASS LIST -->
-            <VBox fx:id="classListView" spacing="20.0" visible="false" managed="false">
-               <padding>
-                  <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
-               </padding>
-               <children>
-                  
-                  <!-- Class List Header -->
-                  <VBox spacing="4.0">
-                     <children>
-                        <Label styleClass="form-title" text="Daftar Kelas" />
-                        <Label styleClass="form-subtitle" text="Kelas yang Tersedia" />
-                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
-                           <VBox.margin>
-                              <Insets top="12.0" />
-                           </VBox.margin>
-                        </VBox>
-                     </children>
-                  </VBox>
-                  
-                  <!-- Scrollable Container for Dynamic Classes -->
-                  <ScrollPane fitToWidth="true" styleClass="course-scroll-pane" VBox.vgrow="ALWAYS">
-                     <content>
-                        <FlowPane fx:id="courseListContainer" hgap="24.0" vgap="24.0" style="-fx-background-color: transparent;">
-                           <padding>
-                              <Insets bottom="10.0" left="4.0" right="4.0" top="10.0" />
-                           </padding>
-                        </FlowPane>
-                     </content>
-                  </ScrollPane>
-                  
-               </children>
-            </VBox>
-            
-            <!-- Tab View 3: PROFILE -->
-            <VBox fx:id="profileView" spacing="28.0" visible="false" managed="false">
-               <padding>
-                  <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
-               </padding>
-               <children>
-                  <!-- Profile Header -->
-                  <VBox spacing="4.0">
-                     <children>
-                        <Label styleClass="form-title" text="Profil Siswa" />
-                        <Label styleClass="form-subtitle" text="Kelola informasi akun Anda dan unggah foto profil." />
-                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
-                           <VBox.margin>
-                              <Insets top="12.0" />
-                           </VBox.margin>
-                        </VBox>
-                     </children>
-                  </VBox>
-
-                  <!-- Profile Details Card -->
-                  <HBox spacing="30.0" styleClass="helper-card" alignment="CENTER_LEFT">
-                     <padding>
-                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
-                     </padding>
-                     <children>
-                        <!-- Large Avatar Container -->
-                        <VBox spacing="12.0" alignment="CENTER">
+                        
+                        <!-- Enrolled Class List Header -->
+                        <VBox spacing="4.0">
                            <children>
-                              <StackPane fx:id="largeAvatarContainer" styleClass="avatar-circle-container" style="-fx-min-width: 90px; -fx-min-height: 90px; -fx-max-width: 90px; -fx-max-height: 90px; -fx-background-radius: 45px; -fx-background-color: -fx-primary-color;">
+                              <Label styleClass="form-title" text="Kelas Yang Diambil" />
+                              <Label styleClass="form-subtitle" text="Jelajahi kelas yang sedang Anda ikuti." />
+                              <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                                 <VBox.margin>
+                                    <Insets top="12.0" />
+                                 </VBox.margin>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Scrollable Container for Dynamic Enrolled Classes -->
+                        <ScrollPane fitToWidth="true" styleClass="course-scroll-pane" VBox.vgrow="ALWAYS">
+                           <content>
+                              <FlowPane fx:id="enrolledCourseListContainer" hgap="24.0" vgap="24.0" style="-fx-background-color: transparent;">
+                                 <padding>
+                                    <Insets bottom="10.0" left="4.0" right="4.0" top="10.0" />
+                                 </padding>
+                              </FlowPane>
+                           </content>
+                        </ScrollPane>
+                        
+                     </children>
+                  </VBox>
+      
+                  <!-- Tab View 2: CLASS LIST -->
+                  <VBox fx:id="classListView" spacing="20.0" visible="false" managed="false">
+                     <padding>
+                        <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+                     </padding>
+                     <children>
+                        
+                        <!-- Class List Header -->
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="form-title" text="Daftar Kelas" />
+                              <Label styleClass="form-subtitle" text="Kelas yang Tersedia" />
+                              <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                                 <VBox.margin>
+                                    <Insets top="12.0" />
+                                 </VBox.margin>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Scrollable Container for Dynamic Classes -->
+                        <ScrollPane fitToWidth="true" styleClass="course-scroll-pane" VBox.vgrow="ALWAYS">
+                           <content>
+                              <FlowPane fx:id="courseListContainer" hgap="24.0" vgap="24.0" style="-fx-background-color: transparent;">
+                                 <padding>
+                                    <Insets bottom="10.0" left="4.0" right="4.0" top="10.0" />
+                                 </padding>
+                              </FlowPane>
+                           </content>
+                        </ScrollPane>
+                        
+                     </children>
+                  </VBox>
+                  
+                  <!-- Tab View 3: PROFILE -->
+                  <VBox fx:id="profileView" spacing="28.0" visible="false" managed="false">
+                     <padding>
+                        <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+                     </padding>
+                     <children>
+                        <!-- Profile Header -->
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="form-title" text="Profil Siswa" />
+                              <Label styleClass="form-subtitle" text="Kelola informasi akun Anda dan unggah foto profil." />
+                              <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                                 <VBox.margin>
+                                    <Insets top="12.0" />
+                                 </VBox.margin>
+                              </VBox>
+                           </children>
+                        </VBox>
+      
+                        <!-- Profile Details Card -->
+                        <HBox spacing="30.0" styleClass="helper-card" alignment="CENTER_LEFT">
+                           <padding>
+                              <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                           </padding>
+                           <children>
+                              <!-- Large Avatar Container -->
+                              <VBox spacing="12.0" alignment="CENTER">
                                  <children>
-                                    <Label fx:id="largeAvatarFallback" text="👤" style="-fx-font-size: 50px; -fx-text-fill: white;" />
-                                    <ImageView fx:id="largeAvatarImageView" fitWidth="90.0" fitHeight="90.0" preserveRatio="true" visible="false" managed="false" />
+                                    <StackPane fx:id="largeAvatarContainer" styleClass="avatar-circle-container" style="-fx-min-width: 90px; -fx-min-height: 90px; -fx-max-width: 90px; -fx-max-height: 90px; -fx-background-radius: 45px; -fx-background-color: -fx-primary-color;">
+                                       <children>
+                                          <Label fx:id="largeAvatarFallback" text="👤" style="-fx-font-size: 50px; -fx-text-fill: white;" />
+                                          <ImageView fx:id="largeAvatarImageView" fitWidth="90.0" fitHeight="90.0" preserveRatio="true" visible="false" managed="false" />
+                                       </children>
+                                    </StackPane>
+                                    <Button onAction="#handleUploadProfilePicture" styleClass="login-button" style="-fx-font-size: 11px; -fx-padding: 6px 12px;" text="Ubah Foto Profil" />
+                                 </children>
+                              </VBox>
+      
+                              <!-- User Info -->
+                              <VBox spacing="14.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <VBox spacing="4.0">
+                                       <children>
+                                          <Label styleClass="user-card-xp-header" text="NAMA PENGGUNA" />
+                                          <Label fx:id="profileUsernameLabel" styleClass="user-card-username" style="-fx-font-size: 16px;" text="student" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="4.0">
+                                       <children>
+                                          <Label styleClass="user-card-xp-header" text="ALAMAT EMAIL" />
+                                          <Label fx:id="profileEmailLabel" styleClass="user-card-username" style="-fx-font-size: 14px; -fx-font-weight: normal;" text="student@edusmart.com" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+      
+                        <!-- Enrolled Classes Section in Profile -->
+                        <VBox spacing="12.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Daftar Kelas yang Selesai Diikuti" />
+                              <VBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS" style="-fx-border-color: #cbd5e1; -fx-border-style: dashed; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-color: #ffffff; -fx-padding: 30px;">
+                                 <children>
+                                    <Label text="📚" style="-fx-font-size: 32px;" />
+                                    <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Tidak ada kelas yang selesai diikuti" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Tab View 5: STUDY VIEW (CLASSROOM) -->
+                  <VBox fx:id="studyView" spacing="20.0" visible="false" managed="false">
+                     <padding>
+                        <Insets bottom="24.0" left="30.0" right="30.0" top="24.0" />
+                     </padding>
+                     <children>
+                        
+                        <!-- Classroom Header -->
+                        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="classroom-header">
+                           <children>
+                              <Button onAction="#handleBackToEnrolledCourses" styleClass="classroom-back-button" text="⬅ Kembali" />
+                              <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label fx:id="classroomCourseTitle" styleClass="form-title" text="Nama Kelas" />
+                                    <Label fx:id="classroomCourseCategory" styleClass="form-subtitle" text="Kategori Kelas" />
+                                 </children>
+                              </VBox>
+                              <VBox spacing="4.0" prefWidth="200.0" alignment="CENTER_RIGHT">
+                                 <children>
+                                    <HBox alignment="CENTER_RIGHT" spacing="6.0">
+                                       <children>
+                                          <Label text="Progres Belajar: " style="-fx-font-size: 11px; -fx-text-fill: #64748b;" />
+                                          <Label fx:id="classroomProgressText" text="0%" style="-fx-font-size: 11px; -fx-text-fill: #2563eb; -fx-font-weight: bold;" />
+                                       </children>
+                                    </HBox>
+                                    <ProgressBar fx:id="classroomProgressBar" progress="0.0" prefWidth="200.0" prefHeight="8.0" styleClass="xp-progress-bar" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        
+                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;" />
+                        
+                        <!-- Classroom Main Work Area -->
+                        <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              
+                              <!-- Left Pane: Materials List Sidebar -->
+                              <VBox prefWidth="250.0" minWidth="250.0" spacing="12.0" styleClass="classroom-sidebar" HBox.hgrow="NEVER">
+                                 <children>
+                                    <Label styleClass="field-label" style="-fx-font-size: 13px;" text="Materi Pelajaran" />
+                                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="course-scroll-pane" style="-fx-background-color: transparent;">
+                                       <content>
+                                          <VBox fx:id="classroomMaterialsContainer" spacing="8.0">
+                                             <padding>
+                                                <Insets bottom="6.0" left="2.0" right="2.0" top="6.0" />
+                                             </padding>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                    <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;" />
+                                    <Button fx:id="classroomQuizBtn" onAction="#handleShowQuiz" styleClass="classroom-quiz-button" text="📝 Kuis Akhir Kursus" maxWidth="Infinity" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Right Pane: Active Workspace -->
+                              <StackPane fx:id="classroomWorkspace" HBox.hgrow="ALWAYS" styleClass="helper-card">
+                                 <padding>
+                                    <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                                 </padding>
+                                 <children>
+                                    
+                                    <!-- Workspace Area 1: Material Content Viewer -->
+                                    <VBox fx:id="classroomMaterialArea" spacing="20.0" visible="true" managed="true">
+                                       <children>
+                                          <Label fx:id="classroomMaterialTitle" styleClass="form-title" style="-fx-font-size: 18px;" text="Judul Materi" />
+                                          <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="course-scroll-pane" style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 6px; -fx-padding: 12px;">
+                                             <content>
+                                                <Label fx:id="classroomMaterialContent" wrapText="true" style="-fx-font-size: 14px; -fx-text-fill: #1e293b; -fx-line-spacing: 6px;" text="Konten materi akan muncul di sini..." />
+                                             </content>
+                                          </ScrollPane>
+                                          <!-- Nav buttons -->
+                                          <HBox spacing="14.0" alignment="CENTER">
+                                             <children>
+                                                <Button fx:id="classroomPrevMatBtn" onAction="#handlePrevMaterial" styleClass="login-button" style="-fx-background-color: #64748b;" text="⬅ Sebelumnya" />
+                                                <HBox HBox.hgrow="ALWAYS" alignment="CENTER">
+                                                   <children>
+                                                      <Button fx:id="classroomMarkCompleteBtn" onAction="#handleMarkComplete" styleClass="login-button" style="-fx-background-color: #10b981;" text="✓ Tandai Selesai" />
+                                                   </children>
+                                                </HBox>
+                                                <Button fx:id="classroomNextMatBtn" onAction="#handleNextMaterial" styleClass="login-button" text="Selanjutnya ➡" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Workspace Area 2: Quiz Taker Form -->
+                                    <VBox fx:id="classroomQuizArea" spacing="20.0" visible="false" managed="false">
+                                       <children>
+                                          <Label fx:id="classroomQuizTitle" styleClass="form-title" style="-fx-font-size: 18px;" text="Kuis Akhir Kursus" />
+                                          <HBox spacing="14.0" style="-fx-background-color: #f1f5f9; -fx-padding: 10px; -fx-background-radius: 4px;">
+                                             <children>
+                                                <Label fx:id="classroomQuizTimeLimit" text="Waktu: 20 menit" style="-fx-font-size: 12px; -fx-text-fill: #475569;" />
+                                                <Label text="|" style="-fx-text-fill: #cbd5e1;" />
+                                                <Label fx:id="classroomQuizPassingScore" text="Nilai Kelulusan: 70" style="-fx-font-size: 12px; -fx-text-fill: #475569;" />
+                                                <Label text="|" style="-fx-text-fill: #cbd5e1;" />
+                                                <Label fx:id="classroomQuizMaxAttempts" text="Batas Percobaan: 3 kali" style="-fx-font-size: 12px; -fx-text-fill: #475569;" />
+                                             </children>
+                                          </HBox>
+                                          <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="course-scroll-pane" style="-fx-background-color: transparent;">
+                                             <content>
+                                                <VBox fx:id="classroomQuizQuestionsContainer" spacing="24.0">
+                                                   <padding>
+                                                      <Insets bottom="12.0" left="4.0" right="4.0" top="12.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                          <HBox spacing="14.0" alignment="CENTER_RIGHT">
+                                             <children>
+                                                <Button onAction="#handleCancelQuiz" styleClass="login-button" style="-fx-background-color: #64748b;" text="Batal" />
+                                                <Button onAction="#handleSubmitQuiz" styleClass="login-button" text="Kirim Jawaban" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Workspace Area 3: Quiz Result Explanation -->
+                                    <VBox fx:id="classroomQuizResultArea" spacing="24.0" visible="false" managed="false">
+                                       <children>
+                                          <VBox alignment="CENTER" spacing="12.0" style="-fx-padding: 16px; -fx-background-radius: 8px;" fx:id="classroomResultBanner">
+                                             <children>
+                                                <Label fx:id="classroomResultIcon" text="🎉" style="-fx-font-size: 36px;" />
+                                                <Label fx:id="classroomResultTitle" text="Anda Lulus Kuis!" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #065f46;" />
+                                                <Label fx:id="classroomResultScoreText" text="Skor Anda: 100/100" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                             </children>
+                                          </VBox>
+                                          <Label styleClass="field-label" text="Pembahasan Hasil Jawaban:" />
+                                          <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="course-scroll-pane" style="-fx-background-color: transparent;">
+                                             <content>
+                                                <VBox fx:id="classroomResultExplanationsContainer" spacing="16.0">
+                                                   <padding>
+                                                      <Insets bottom="6.0" left="2.0" right="2.0" top="6.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                          <HBox alignment="CENTER_RIGHT">
+                                             <children>
+                                                <Button onAction="#handleCloseQuizResult" styleClass="login-button" text="Tutup Hasil" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    
                                  </children>
                               </StackPane>
-                              <Button onAction="#handleUploadProfilePicture" styleClass="login-button" style="-fx-font-size: 11px; -fx-padding: 6px 12px;" text="Ubah Foto Profil" />
+                              
                            </children>
-                        </VBox>
-
-                        <!-- User Info -->
-                        <VBox spacing="14.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <VBox spacing="4.0">
-                                 <children>
-                                    <Label styleClass="user-card-xp-header" text="NAMA PENGGUNA" />
-                                    <Label fx:id="profileUsernameLabel" styleClass="user-card-username" style="-fx-font-size: 16px;" text="student" />
-                                 </children>
-                              </VBox>
-                              <VBox spacing="4.0">
-                                 <children>
-                                    <Label styleClass="user-card-xp-header" text="ALAMAT EMAIL" />
-                                    <Label fx:id="profileEmailLabel" styleClass="user-card-username" style="-fx-font-size: 14px; -fx-font-weight: normal;" text="student@edusmart.com" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-
-                  <!-- Enrolled Classes Section in Profile -->
-                  <VBox spacing="12.0" VBox.vgrow="ALWAYS">
-                     <children>
-                        <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Daftar Kelas yang Selesai Diikuti" />
-                        <VBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS" style="-fx-border-color: #cbd5e1; -fx-border-style: dashed; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-color: #ffffff; -fx-padding: 30px;">
-                           <children>
-                              <Label text="📚" style="-fx-font-size: 32px;" />
-                              <Label styleClass="field-label" style="-fx-font-size: 14px;" text="Tidak ada kelas yang selesai diikuti" />
-                           </children>
-                        </VBox>
+                        </HBox>
+                        
                      </children>
                   </VBox>
+                  
                </children>
-            </VBox>
-            
+            </StackPane>
          </children>
-      </StackPane>
+      </VBox>
    </children>
 </HBox>

@@ -24,11 +24,33 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+
+import com.edusmart.model.Material;
+import com.edusmart.model.Quiz;
+import com.edusmart.model.QuizAttempt;
+import com.edusmart.model.Question;
+import com.edusmart.model.MultipleChoiceQuestion;
+import com.edusmart.model.EssayQuestion;
+import com.edusmart.repository.MaterialRepository;
+import com.edusmart.repository.MaterialCompletionRepository;
+import com.edusmart.repository.QuestionRepository;
+import com.edusmart.service.CourseService;
+import com.edusmart.service.QuizService;
+import com.edusmart.service.EnrollmentService;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.Alert;
+import javafx.event.ActionEvent;
 
 @Component
 public class StudentDashboardController {
@@ -92,14 +114,106 @@ public class StudentDashboardController {
     @FXML
     private FlowPane enrolledCourseListContainer;
 
+    // Study View FXML Fields
+    @FXML
+    private VBox sidebar;
+    @FXML
+    private VBox studyView;
+    @FXML
+    private Label classroomCourseTitle;
+    @FXML
+    private Label classroomCourseCategory;
+    @FXML
+    private Label classroomProgressText;
+    @FXML
+    private ProgressBar classroomProgressBar;
+    @FXML
+    private VBox classroomMaterialsContainer;
+    @FXML
+    private Button classroomQuizBtn;
+    @FXML
+    private StackPane classroomWorkspace;
+    
+    // Material Area
+    @FXML
+    private VBox classroomMaterialArea;
+    @FXML
+    private Label classroomMaterialTitle;
+    @FXML
+    private Label classroomMaterialContent;
+    @FXML
+    private Button classroomPrevMatBtn;
+    @FXML
+    private Button classroomMarkCompleteBtn;
+    @FXML
+    private Button classroomNextMatBtn;
+
+    // Quiz Area
+    @FXML
+    private VBox classroomQuizArea;
+    @FXML
+    private Label classroomQuizTitle;
+    @FXML
+    private Label classroomQuizTimeLimit;
+    @FXML
+    private Label classroomQuizPassingScore;
+    @FXML
+    private Label classroomQuizMaxAttempts;
+    @FXML
+    private VBox classroomQuizQuestionsContainer;
+
+    // Quiz Result Area
+    @FXML
+    private VBox classroomQuizResultArea;
+    @FXML
+    private VBox classroomResultBanner;
+    @FXML
+    private Label classroomResultIcon;
+    @FXML
+    private Label classroomResultTitle;
+    @FXML
+    private Label classroomResultScoreText;
+    @FXML
+    private VBox classroomResultExplanationsContainer;
+
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final MaterialRepository materialRepository;
+    private final MaterialCompletionRepository materialCompletionRepository;
+    private final QuestionRepository questionRepository;
+    private final CourseService courseService;
+    private final QuizService quizService;
+    private final EnrollmentService enrollmentService;
 
-    public StudentDashboardController(EnrollmentRepository enrollmentRepository, UserRepository userRepository, CourseRepository courseRepository) {
+    // Active state variables
+    private com.edusmart.model.Course activeCourse;
+    private List<Material> activeMaterials;
+    private Material activeMaterial;
+    private int activeMaterialIndex = 0;
+    private Quiz activeQuiz;
+    private java.util.Map<Long, ToggleGroup> quizMcGroups = new java.util.HashMap<>();
+    private java.util.Map<Long, TextField> quizEssayFields = new java.util.HashMap<>();
+
+    @Autowired
+    public StudentDashboardController(EnrollmentRepository enrollmentRepository,
+                                     UserRepository userRepository,
+                                     CourseRepository courseRepository,
+                                     MaterialRepository materialRepository,
+                                     MaterialCompletionRepository materialCompletionRepository,
+                                     QuestionRepository questionRepository,
+                                     CourseService courseService,
+                                     QuizService quizService,
+                                     EnrollmentService enrollmentService) {
         this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
         this.courseRepository = courseRepository;
+        this.materialRepository = materialRepository;
+        this.materialCompletionRepository = materialCompletionRepository;
+        this.questionRepository = questionRepository;
+        this.courseService = courseService;
+        this.quizService = quizService;
+        this.enrollmentService = enrollmentService;
     }
 
     public static void setSessionUser(User user) {
@@ -418,6 +532,7 @@ public class StudentDashboardController {
             // Action Button
             HBox btn = new HBox();
             btn.getStyleClass().add("course-card-button");
+            btn.setStyle("-fx-cursor: hand;");
             
             Label btnTxt = new Label("Buka Kelas");
             btnTxt.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
@@ -426,6 +541,7 @@ public class StudentDashboardController {
             
             btn.getChildren().addAll(btnTxt, btnArrow);
             btn.setAlignment(javafx.geometry.Pos.CENTER);
+            btn.setOnMouseClicked(e -> openClassroom(enrollment.getCourse()));
             
             // Assemble Card
             body.getChildren().addAll(titleLabel, categoryLabel, instructorRow, progressBox, btn);
@@ -496,6 +612,8 @@ public class StudentDashboardController {
         classListView.setManaged(false);
         profileView.setVisible(false);
         profileView.setManaged(false);
+        studyView.setVisible(false);
+        studyView.setManaged(false);
         
         // Show active view
         if (activeView != null) {
@@ -588,6 +706,416 @@ public class StudentDashboardController {
             JavaFXApplication.getPrimaryStage().getScene().setRoot(root);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void openClassroom(com.edusmart.model.Course course) {
+        this.activeCourse = course;
+        this.activeMaterials = materialRepository.findByCourseOrderByOrderIndexAsc(course);
+        
+        // Find Quiz
+        this.activeQuiz = quizService.getQuizByCourseId(course.getId()).orElse(null);
+        if (this.activeQuiz == null) {
+            classroomQuizBtn.setVisible(false);
+            classroomQuizBtn.setManaged(false);
+        } else {
+            classroomQuizBtn.setVisible(true);
+            classroomQuizBtn.setManaged(true);
+        }
+        
+        updateClassroomProgress();
+        renderMaterialsSidebar();
+        
+        if (activeMaterials != null && !activeMaterials.isEmpty()) {
+            activeMaterialIndex = 0;
+            activeMaterial = activeMaterials.get(0);
+            showMaterial(activeMaterial);
+        } else {
+            activeMaterial = null;
+            activeMaterialIndex = -1;
+            classroomMaterialTitle.setText("Tidak ada materi");
+            classroomMaterialContent.setText("Belum ada materi pelajaran di kelas ini.");
+            classroomPrevMatBtn.setDisable(true);
+            classroomNextMatBtn.setDisable(true);
+            classroomMarkCompleteBtn.setDisable(true);
+            switchWorkspaceArea(classroomMaterialArea);
+        }
+        
+        switchTab(null, studyView);
+    }
+
+    private void updateClassroomProgress() {
+        if (activeCourse == null || sessionUser == null) return;
+        
+        enrollmentRepository.findByUserAndCourse(sessionUser, activeCourse).ifPresent(enrollment -> {
+            int progress = enrollment.getProgressPercent();
+            classroomProgressText.setText(progress + "%");
+            classroomProgressBar.setProgress(progress / 100.0);
+        });
+    }
+
+    private void renderMaterialsSidebar() {
+        classroomMaterialsContainer.getChildren().clear();
+        if (activeMaterials == null) return;
+        
+        for (int i = 0; i < activeMaterials.size(); i++) {
+            Material material = activeMaterials.get(i);
+            final int index = i;
+            
+            HBox item = new HBox();
+            item.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            item.setSpacing(10.0);
+            
+            // Check if active
+            boolean isActive = (activeMaterial != null && activeMaterial.getId().equals(material.getId()));
+            if (isActive) {
+                item.getStyleClass().add("classroom-material-item-active");
+            } else {
+                item.getStyleClass().add("classroom-material-item");
+            }
+            
+            Label titleLbl = new Label((i + 1) + ". " + material.getTitle());
+            titleLbl.setStyle("-fx-font-size: 12px; -fx-text-fill: " + (isActive ? "#2563eb;" : "#1e293b;") + " -fx-font-weight: " + (isActive ? "bold;" : "normal;"));
+            titleLbl.setWrapText(true);
+            
+            HBox.setHgrow(titleLbl, javafx.scene.layout.Priority.ALWAYS);
+            item.getChildren().add(titleLbl);
+            
+            boolean isCompleted = materialCompletionRepository.existsByUserAndMaterial(sessionUser, material);
+            if (isCompleted) {
+                Label checkLbl = new Label("✅");
+                checkLbl.setStyle("-fx-font-size: 11px;");
+                item.getChildren().add(checkLbl);
+            }
+            
+            item.setOnMouseClicked(event -> {
+                activeMaterialIndex = index;
+                activeMaterial = material;
+                showMaterial(material);
+            });
+            
+            classroomMaterialsContainer.getChildren().add(item);
+        }
+    }
+
+    private void showMaterial(Material material) {
+        if (material == null) return;
+        this.activeMaterial = material;
+        this.activeMaterialIndex = activeMaterials.indexOf(material);
+        
+        switchWorkspaceArea(classroomMaterialArea);
+        renderMaterialsSidebar();
+        
+        classroomMaterialTitle.setText(material.getTitle());
+        classroomMaterialContent.setText(material.getContent());
+        
+        classroomPrevMatBtn.setDisable(activeMaterialIndex <= 0);
+        classroomNextMatBtn.setDisable(activeMaterialIndex >= activeMaterials.size() - 1);
+        
+        boolean isCompleted = materialCompletionRepository.existsByUserAndMaterial(sessionUser, material);
+        if (isCompleted) {
+            classroomMarkCompleteBtn.setDisable(true);
+            classroomMarkCompleteBtn.setText("✓ Selesai");
+            classroomMarkCompleteBtn.setStyle("-fx-background-color: #64748b;");
+        } else {
+            classroomMarkCompleteBtn.setDisable(false);
+            classroomMarkCompleteBtn.setText("✓ Tandai Selesai");
+            classroomMarkCompleteBtn.setStyle("-fx-background-color: #10b981;");
+        }
+    }
+
+    private void switchWorkspaceArea(VBox activeArea) {
+        classroomMaterialArea.setVisible(false);
+        classroomMaterialArea.setManaged(false);
+        classroomQuizArea.setVisible(false);
+        classroomQuizArea.setManaged(false);
+        classroomQuizResultArea.setVisible(false);
+        classroomQuizResultArea.setManaged(false);
+        
+        if (activeArea != null) {
+            activeArea.setVisible(true);
+            activeArea.setManaged(true);
+        }
+    }
+
+    @FXML
+    public void handlePrevMaterial(ActionEvent event) {
+        if (activeMaterials != null && activeMaterialIndex > 0) {
+            activeMaterialIndex--;
+            showMaterial(activeMaterials.get(activeMaterialIndex));
+        }
+    }
+
+    @FXML
+    public void handleNextMaterial(ActionEvent event) {
+        if (activeMaterials != null && activeMaterialIndex < activeMaterials.size() - 1) {
+            activeMaterialIndex++;
+            showMaterial(activeMaterials.get(activeMaterialIndex));
+        }
+    }
+
+    @FXML
+    public void handleMarkComplete(ActionEvent event) {
+        if (activeMaterial == null || sessionUser == null) return;
+        try {
+            courseService.markMaterialAsComplete(sessionUser.getId(), activeMaterial.getId());
+            
+            // Refresh user session points in db
+            userRepository.findById(sessionUser.getId()).ifPresent(updatedUser -> {
+                sessionUser = updatedUser;
+            });
+            
+            updateClassroomProgress();
+            showMaterial(activeMaterial);
+            renderMaterialsSidebar();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void handleShowQuiz(ActionEvent event) {
+        if (activeQuiz != null) {
+            showQuiz();
+        }
+    }
+
+    private void showQuiz() {
+        switchWorkspaceArea(classroomQuizArea);
+        
+        quizMcGroups.clear();
+        quizEssayFields.clear();
+        classroomQuizQuestionsContainer.getChildren().clear();
+        
+        classroomQuizTitle.setText(activeQuiz.getTitle());
+        classroomQuizTimeLimit.setText("Waktu: " + activeQuiz.getTimeLimit() + " menit");
+        classroomQuizPassingScore.setText("Nilai Kelulusan: " + activeQuiz.getPassingScore());
+        classroomQuizMaxAttempts.setText("Batas Percobaan: " + activeQuiz.getMaxAttempts() + " kali");
+        
+        List<Question> questions = questionRepository.findByQuiz(activeQuiz);
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            
+            VBox questionBox = new VBox();
+            questionBox.getStyleClass().add("quiz-question-box");
+            questionBox.setSpacing(10.0);
+            
+            Label qText = new Label("Pertanyaan " + (i + 1) + ": " + question.getQuestionText() + " (" + question.getPoints() + " Poin)");
+            qText.setWrapText(true);
+            qText.setStyle("-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #1e293b;");
+            questionBox.getChildren().add(qText);
+            
+            if (question instanceof MultipleChoiceQuestion) {
+                MultipleChoiceQuestion mcQ = (MultipleChoiceQuestion) question;
+                ToggleGroup group = new ToggleGroup();
+                
+                RadioButton optA = new RadioButton("A. " + mcQ.getOptionA());
+                RadioButton optB = new RadioButton("B. " + mcQ.getOptionB());
+                RadioButton optC = new RadioButton("C. " + mcQ.getOptionC());
+                RadioButton optD = new RadioButton("D. " + mcQ.getOptionD());
+                
+                RadioButton[] options = {optA, optB, optC, optD};
+                String[] letters = {"A", "B", "C", "D"};
+                
+                VBox optionsBox = new VBox(8.0);
+                optionsBox.setPadding(new Insets(8.0, 0.0, 0.0, 16.0));
+                
+                for (int j = 0; j < 4; j++) {
+                    options[j].setToggleGroup(group);
+                    options[j].setUserData(letters[j]);
+                    options[j].setWrapText(true);
+                    options[j].setStyle("-fx-font-size: 12px; -fx-text-fill: #334155;");
+                    optionsBox.getChildren().add(options[j]);
+                }
+                
+                questionBox.getChildren().add(optionsBox);
+                quizMcGroups.put(question.getId(), group);
+                
+            } else if (question instanceof EssayQuestion) {
+                TextField essayField = new TextField();
+                essayField.setPromptText("Tulis jawaban Anda di sini...");
+                essayField.setStyle("-fx-font-size: 12px; -fx-padding: 8px; -fx-border-color: #cbd5e1; -fx-border-radius: 4px;");
+                
+                VBox essayBox = new VBox(8.0);
+                essayBox.setPadding(new Insets(8.0, 0.0, 0.0, 16.0));
+                essayBox.getChildren().add(essayField);
+                
+                questionBox.getChildren().add(essayBox);
+                quizEssayFields.put(question.getId(), essayField);
+            }
+            
+            classroomQuizQuestionsContainer.getChildren().add(questionBox);
+        }
+    }
+
+    @FXML
+    public void handleSubmitQuiz(ActionEvent event) {
+        if (activeQuiz == null || sessionUser == null) return;
+        
+        // Gather answers
+        java.util.Map<Long, String> answers = new java.util.HashMap<>();
+        List<Question> questions = questionRepository.findByQuiz(activeQuiz);
+        
+        for (Question question : questions) {
+            if (question instanceof MultipleChoiceQuestion) {
+                ToggleGroup group = quizMcGroups.get(question.getId());
+                if (group != null) {
+                    Toggle selectedToggle = group.getSelectedToggle();
+                    if (selectedToggle != null) {
+                        answers.put(question.getId(), (String) selectedToggle.getUserData());
+                    } else {
+                        answers.put(question.getId(), "");
+                    }
+                }
+            } else if (question instanceof EssayQuestion) {
+                TextField field = quizEssayFields.get(question.getId());
+                if (field != null) {
+                    answers.put(question.getId(), field.getText().trim());
+                } else {
+                    answers.put(question.getId(), "");
+                }
+            }
+        }
+        
+        try {
+            QuizAttempt attempt = quizService.submitQuizAttempt(sessionUser.getId(), activeQuiz.getId(), answers);
+            
+            // Refresh user points
+            userRepository.findById(sessionUser.getId()).ifPresent(updatedUser -> {
+                sessionUser = updatedUser;
+            });
+            
+            showQuizResult(attempt, answers);
+        } catch (IllegalStateException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Batas Percobaan Tercapai");
+            alert.setHeaderText("Gagal Mengirim Jawaban Kuis");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Terjadi Kesalahan");
+            alert.setContentText("Terjadi kesalahan saat memproses kuis Anda: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    private void showQuizResult(QuizAttempt attempt, java.util.Map<Long, String> answers) {
+        switchWorkspaceArea(classroomQuizResultArea);
+        
+        classroomResultScoreText.setText("Skor Anda: " + attempt.getScore() + "/100");
+        
+        if (attempt.isPassed()) {
+            classroomResultBanner.setStyle("-fx-background-color: #d1fae5; -fx-padding: 16px; -fx-background-radius: 8px;");
+            classroomResultIcon.setText("🎉");
+            classroomResultTitle.setText("Anda Lulus Kuis!");
+            classroomResultTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #065f46;");
+        } else {
+            classroomResultBanner.setStyle("-fx-background-color: #fee2e2; -fx-padding: 16px; -fx-background-radius: 8px;");
+            classroomResultIcon.setText("❌");
+            classroomResultTitle.setText("Anda Belum Lulus.");
+            classroomResultTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #991b1b;");
+        }
+        
+        classroomResultExplanationsContainer.getChildren().clear();
+        List<Question> questions = questionRepository.findByQuiz(activeQuiz);
+        
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            
+            VBox box = new VBox();
+            box.setStyle("-fx-background-color: #ffffff; -fx-border-color: #e2e8f0; -fx-border-width: 1px; -fx-border-radius: 8px; -fx-padding: 16px;");
+            box.setSpacing(8.0);
+            
+            Label qText = new Label("Pertanyaan " + (i + 1) + ": " + question.getQuestionText());
+            qText.setWrapText(true);
+            qText.setStyle("-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #1e293b;");
+            box.getChildren().add(qText);
+            
+            String studentAnswer = answers.get(question.getId());
+            if (studentAnswer == null || studentAnswer.isEmpty()) {
+                studentAnswer = "(Tidak dijawab)";
+            }
+            
+            boolean isCorrect = question.grade(studentAnswer);
+            
+            Label sAnsLabel = new Label();
+            Label cAnsLabel = new Label();
+            
+            if (question instanceof MultipleChoiceQuestion) {
+                MultipleChoiceQuestion mc = (MultipleChoiceQuestion) question;
+                String correctKey = question.getCorrectAnswer();
+                String correctText = "";
+                if ("A".equalsIgnoreCase(correctKey)) correctText = mc.getOptionA();
+                else if ("B".equalsIgnoreCase(correctKey)) correctText = mc.getOptionB();
+                else if ("C".equalsIgnoreCase(correctKey)) correctText = mc.getOptionC();
+                else if ("D".equalsIgnoreCase(correctKey)) correctText = mc.getOptionD();
+                cAnsLabel.setText("Jawaban Benar: " + correctKey + ". " + correctText);
+                
+                String studText = "";
+                if ("A".equalsIgnoreCase(studentAnswer)) studText = mc.getOptionA();
+                else if ("B".equalsIgnoreCase(studentAnswer)) studText = mc.getOptionB();
+                else if ("C".equalsIgnoreCase(studentAnswer)) studText = mc.getOptionC();
+                else if ("D".equalsIgnoreCase(studentAnswer)) studText = mc.getOptionD();
+                
+                if (studText.isEmpty()) {
+                    sAnsLabel.setText("Jawaban Anda: " + studentAnswer);
+                } else {
+                    sAnsLabel.setText("Jawaban Anda: " + studentAnswer + ". " + studText);
+                }
+            } else {
+                cAnsLabel.setText("Jawaban Benar (Kunci Kata): " + question.getCorrectAnswer());
+                sAnsLabel.setText("Jawaban Anda: " + studentAnswer);
+            }
+            
+            sAnsLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: " + (isCorrect ? "#059669;" : "#dc2626;") + " -fx-font-weight: bold;");
+            cAnsLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #059669; -fx-font-weight: bold;");
+            
+            box.getChildren().addAll(sAnsLabel, cAnsLabel);
+            
+            String expl = question.getExplanation();
+            if (expl == null || expl.isEmpty()) {
+                expl = "Tidak ada pembahasan.";
+            }
+            Label explLabel = new Label("Pembahasan: " + expl);
+            explLabel.setWrapText(true);
+            explLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #475569; -fx-font-style: italic; -fx-padding: 4px 0 0 0;");
+            box.getChildren().add(explLabel);
+            
+            classroomResultExplanationsContainer.getChildren().add(box);
+        }
+    }
+
+    @FXML
+    public void handleCancelQuiz(ActionEvent event) {
+        switchWorkspaceArea(classroomMaterialArea);
+    }
+
+    @FXML
+    public void handleCloseQuizResult(ActionEvent event) {
+        switchWorkspaceArea(classroomMaterialArea);
+        updateClassroomProgress();
+        
+        List<Enrollment> enrollments = enrollmentRepository.findByUser(sessionUser);
+        populateEnrolledCourses(enrollments);
+    }
+
+    @FXML
+    public void handleBackToEnrolledCourses(ActionEvent event) {
+        switchTab(enrolledClassTabBtn, enrolledClassListView);
+        
+        List<Enrollment> enrollments = enrollmentRepository.findByUser(sessionUser);
+        populateEnrolledCourses(enrollments);
+    }
+
+    @FXML
+    public void handleToggleSidebar(ActionEvent event) {
+        if (sidebar != null) {
+            boolean isVisible = sidebar.isVisible();
+            sidebar.setVisible(!isVisible);
+            sidebar.setManaged(!isVisible);
         }
     }
 }
