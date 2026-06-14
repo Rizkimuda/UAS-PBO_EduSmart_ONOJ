@@ -2,210 +2,657 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="rootPane" prefHeight="600.0" prefWidth="900.0" styleClass="root-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edusmart.ui.DashboardController">
+<HBox fx:id="rootPane" prefHeight="650.0" prefWidth="950.0" styleClass="root-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.edusmart.ui.DashboardController">
    <children>
-      <!-- Top Navigation Bar -->
-      <HBox alignment="CENTER_LEFT" prefHeight="70.0" styleClass="brand-sidebar" spacing="20.0" VBox.vgrow="NEVER">
-         <padding>
-            <Insets left="30.0" right="30.0" />
-         </padding>
-         <children>
-            <Label styleClass="brand-icon" text="🎓">
-               <font>
-                  <Font size="28.0" />
-               </font>
-            </Label>
-            <Label styleClass="brand-title" text="EduSmart">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Label>
-            
-            <HBox HBox.hgrow="ALWAYS" /> <!-- Spacer -->
-            
-            <!-- User Status Info -->
-            <HBox alignment="CENTER" spacing="12.0">
-               <children>
-                  <VBox alignment="CENTER_RIGHT" spacing="2.0">
-                     <children>
-                        <Label fx:id="headerUsernameLabel" styleClass="field-label" text="John Doe" />
-                        <Label fx:id="headerRoleLabel" styleClass="info-header" text="ROLE_ADMIN" />
-                     </children>
-                  </VBox>
-                  <Circle fx:id="avatarCircle" fill="#6366f1" radius="20.0" stroke="TRANSPARENT" />
-                  <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" styleClass="login-button" text="Sign Out" prefHeight="32.0">
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-            </HBox>
-         </children>
-      </HBox>
       
-      <!-- Main Content Area -->
-      <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <!-- Left Sidebar (Instructor Style) -->
+      <VBox fx:id="sidebar" prefWidth="280.0" minWidth="280.0" styleClass="student-sidebar" HBox.hgrow="NEVER">
          <children>
-            <!-- Left Side: Profile & OOP Pillar Inspector -->
-            <VBox prefWidth="350.0" styleClass="form-container" spacing="20.0" HBox.hgrow="NEVER">
-               <padding>
-                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-               </padding>
+            <VBox prefWidth="280.0" minWidth="280.0" maxWidth="280.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Label styleClass="form-title" text="Active Session">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                  </Label>
-                  
-                  <!-- Profile Attributes List -->
-                  <VBox spacing="12.0" styleClass="helper-card">
+                  <!-- Sidebar Header -->
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="sidebar-header">
                      <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
                      </padding>
                      <children>
-                        <VBox spacing="4.0">
-                           <children>
-                              <Label styleClass="helper-header" text="LOGGED IN AS" />
-                              <Label fx:id="profileUsernameLabel" styleClass="field-label" text="admin" />
-                           </children>
-                        </VBox>
-                        <VBox spacing="4.0">
-                           <children>
-                              <Label styleClass="helper-header" text="EMAIL ADDRESS" />
-                              <Label fx:id="profileEmailLabel" styleClass="helper-credential" text="admin@edusmart.com" />
-                           </children>
-                        </VBox>
-                        <VBox spacing="4.0">
-                           <children>
-                              <Label styleClass="helper-header" text="DATABASE ID" />
-                              <Label fx:id="profileIdLabel" styleClass="helper-credential" text="1" />
-                           </children>
-                        </VBox>
-                        <VBox spacing="4.0">
-                           <children>
-                              <Label styleClass="helper-header" text="CREATION DATE" />
-                              <Label fx:id="profileCreatedLabel" styleClass="helper-credential" text="2026-06-12 17:30:00" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </VBox>
-                  
-                  <!-- OOP Demonstration Info Box -->
-                  <VBox spacing="10.0" styleClass="brand-info-card" maxWidth="Infinity">
-                     <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                     </padding>
-                     <children>
-                        <Label styleClass="info-header" text="POLYMORPHISM IN ACTION" />
-                        <VBox spacing="4.0">
-                           <children>
-                              <Label styleClass="info-item" text="• Parent class field (UserBase.role):" />
-                              <Label fx:id="rawRoleLabel" styleClass="field-label" text="ROLE_ADMIN" textFill="#818cf8"/>
-                           </children>
-                        </VBox>
-                        <VBox spacing="4.0">
-                           <children>
-                              <Label styleClass="info-item" text="• Overridden method (User.getRoleName()):" />
-                              <Label fx:id="polymorphicRoleLabel" styleClass="field-label" text="ADMIN" textFill="#a855f7"/>
-                           </children>
-                        </VBox>
-                     </children>
-                  </VBox>
-               </children>
-            </VBox>
-            
-            <!-- Right Side: Main Workboard -->
-            <VBox spacing="25.0" HBox.hgrow="ALWAYS">
-               <padding>
-                  <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
-               </padding>
-               <children>
-                  <VBox spacing="5.0">
-                     <children>
-                        <Label styleClass="form-title" text="EduSmart Learning Dashboard" />
-                        <Label styleClass="form-subtitle" text="Welcome to your centralized classroom manager. Quick statistics at a glance." />
-                     </children>
-                  </VBox>
-                  
-                  <!-- Dashboard Grid Mockups -->
-                  <HBox spacing="20.0" VBox.vgrow="NEVER">
-                     <children>
-                        <!-- Card 1 -->
-                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
-                           <padding>
-                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                           </padding>
-                           <children>
-                              <Label text="📚">
-                                 <font>
-                                    <Font size="24.0" />
-                                 </font>
-                              </Label>
-                              <Label styleClass="field-label" text="My Courses" />
-                              <Label styleClass="form-title" text="12" />
-                              <Label styleClass="helper-header" text="4 ACTIVE SEMESTERS" />
-                           </children>
-                        </VBox>
-                        
-                        <!-- Card 2 -->
-                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
-                           <padding>
-                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                           </padding>
-                           <children>
-                              <Label text="👥">
-                                 <font>
-                                    <Font size="24.0" />
-                                 </font>
-                              </Label>
-                              <Label styleClass="field-label" text="Total Students" />
-                              <Label styleClass="form-title" text="1,248" />
-                              <Label styleClass="helper-header" text="+48 THIS WEEK" />
-                           </children>
-                        </VBox>
-                        
-                        <!-- Card 3 -->
-                        <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
-                           <padding>
-                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                           </padding>
-                           <children>
-                              <Label text="📈">
-                                 <font>
-                                    <Font size="24.0" />
-                                 </font>
-                              </Label>
-                              <Label styleClass="field-label" text="System Status" />
-                              <Label styleClass="form-title" text="Optimal" textFill="#10b981"/>
-                              <Label styleClass="helper-header" text="H2 DB &amp; SPRING ONLINE" />
-                           </children>
-                        </VBox>
+                        <Label styleClass="brand-header-icon" text="🎓" style="-fx-font-size: 26px;" />
+                        <Label styleClass="brand-header-title" text="EduSmart" style="-fx-font-size: 18px;" />
                      </children>
                   </HBox>
                   
-                  <!-- Subtitle section -->
-                  <VBox spacing="10.0" styleClass="helper-card" VBox.vgrow="ALWAYS">
+                  <!-- Active Instructor Card -->
+                  <VBox fx:id="activeInstructorCard" spacing="10.0" styleClass="sidebar-user-card" onMouseClicked="#showProfileView" style="-fx-cursor: hand; -fx-background-color: #f5f3ff; -fx-border-color: #ddd6fe;">
                      <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" bottom="20.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label styleClass="user-card-header" text="INSTRUKTUR AKTIF" style="-fx-text-fill: #6d28d9;" />
+                        
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                           <children>
+                              <!-- Circular Avatar -->
+                              <StackPane fx:id="avatarContainer" styleClass="avatar-circle-container" style="-fx-background-color: #7c3aed;">
+                                 <children>
+                                    <Label fx:id="avatarFallback" text="👤" style="-fx-font-size: 20px; -fx-text-fill: white;" />
+                                    <ImageView fx:id="avatarImageView" fitWidth="36.0" fitHeight="36.0" preserveRatio="true" visible="false" managed="false" />
+                                 </children>
+                              </StackPane>
+                              
+                              <VBox spacing="2.0">
+                                 <children>
+                                    <Label fx:id="usernameLabel" styleClass="user-card-username" text="Instructor" style="-fx-text-fill: #1e1b4b;" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Tab Menu Buttons -->
+                  <VBox spacing="6.0" VBox.vgrow="ALWAYS">
+                     <padding>
+                        <Insets left="14.0" right="14.0" />
                      </padding>
                      <children>
-                        <Label styleClass="field-label" text="Sprint 1 Functional Checklist Verification" />
-                        <Label styleClass="helper-credential" text="✅ H2 persistent DB file-mode active: data stored under './edusmart.mv.db'" />
-                        <Label styleClass="helper-credential" text="✅ Spring Security programmatic authentication checking input password match" />
-                        <Label styleClass="helper-credential" text="✅ Spring Bean Injection: this controller is auto-wired via Spring Context" />
-                        <Label styleClass="helper-credential" text="✅ Validation: empty checks, database lookup, and BCrypt encryption verified" />
+                        
+                        <!-- Tab: HOME -->
+                        <HBox fx:id="dashboardTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showDashboardView" spacing="14.0" styleClass="active-sidebar-tab">
+                           <padding>
+                              <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                           </padding>
+                           <children>
+                              <Label styleClass="tab-icon" text="🏠" style="-fx-font-size: 18px;" />
+                              <VBox spacing="1.0">
+                                 <children>
+                                    <Label styleClass="tab-title" text="BERANDA" />
+                                    <Label styleClass="tab-subtitle" text="Ikhtisar Pengajaran" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        
+                        <!-- Separator line -->
+                        <VBox prefHeight="1" minHeight="1" maxHeight="1" styleClass="sidebar-divider">
+                           <VBox.margin>
+                              <Insets top="4" bottom="4" left="16" right="16"/>
+                           </VBox.margin>
+                        </VBox>
+                        
+                        <!-- Tab: MY COURSES -->
+                        <HBox fx:id="myCoursesTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showMyCoursesView" spacing="14.0" styleClass="sidebar-tab">
+                           <padding>
+                              <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                           </padding>
+                           <children>
+                              <Label styleClass="tab-icon" text="📚" style="-fx-font-size: 18px;" />
+                              <VBox spacing="1.0">
+                                 <children>
+                                    <Label styleClass="tab-title" text="KURSUS SAYA" />
+                                    <Label styleClass="tab-subtitle" text="Manajemen Kursus" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+
+                        <!-- Separator line -->
+                        <VBox prefHeight="1" minHeight="1" maxHeight="1" styleClass="sidebar-divider">
+                           <VBox.margin>
+                              <Insets top="4" bottom="4" left="16" right="16"/>
+                           </VBox.margin>
+                        </VBox>
+                        
+                        <!-- Tab: CREATE COURSE -->
+                        <HBox fx:id="createCourseTabBtn" alignment="CENTER_LEFT" onMouseClicked="#showCreateCourseView" spacing="14.0" styleClass="sidebar-tab">
+                           <padding>
+                              <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                           </padding>
+                           <children>
+                              <Label styleClass="tab-icon" text="➕" style="-fx-font-size: 18px;" />
+                              <VBox spacing="1.0">
+                                 <children>
+                                    <Label styleClass="tab-title" text="BUAT KURSUS" />
+                                    <Label styleClass="tab-subtitle" text="Tambah Kursus Baru" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        
+                     </children>
+                  </VBox>
+                  
+                  <!-- Sidebar Footer with Logout -->
+                  <VBox spacing="14.0" alignment="BOTTOM_CENTER">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" />
+                     </padding>
+                     <children>
+                        
+                        <!-- Logout Tab -->
+                        <HBox alignment="CENTER_LEFT" onMouseClicked="#handleLogout" spacing="14.0" styleClass="sidebar-logout-tab">
+                           <padding>
+                              <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                           </padding>
+                           <children>
+                              <Label styleClass="logout-icon" text="🚪" style="-fx-font-size: 16px;" />
+                              <Label styleClass="logout-title" text="KELUAR" />
+                           </children>
+                        </HBox>
+                        
+                        <!-- Copyright Info -->
+                        <Label styleClass="sidebar-footer-text" text="© 2026 EduSmart. Hak Cipta Dilindungi." />
                      </children>
                   </VBox>
                </children>
             </VBox>
          </children>
-      </HBox>
+      </VBox>
+      
+      <!-- Right Main Workspace Content Area -->
+      <VBox HBox.hgrow="ALWAYS">
+         <children>
+            <!-- Workspace Top Header Bar -->
+            <HBox alignment="CENTER_LEFT" spacing="16.0" style="-fx-background-color: #ffffff; -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1px 0; -fx-padding: 10px 24px;">
+               <children>
+                  <Button onAction="#handleToggleSidebar" text="☰" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16px; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-padding: 4px 8px;" />
+                  <Label text="EduSmart Instructor Console" style="-fx-font-size: 12px; -fx-text-fill: #7c3aed; -fx-font-weight: bold;" />
+               </children>
+            </HBox>
+            
+            <StackPane styleClass="form-container" VBox.vgrow="ALWAYS">
+               <children>
+                  
+                  <!-- Tab View 1: BERANDA -->
+                  <VBox fx:id="dashboardView" spacing="28.0" visible="true" managed="true">
+                     <padding>
+                        <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+                     </padding>
+                     <children>
+                        <!-- Header -->
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label fx:id="welcomeLabel" styleClass="form-title" text="Selamat datang kembali, Instruktur!" />
+                              <Label styleClass="form-subtitle" text="Berikut adalah ringkasan performa kelas dan materi yang Anda ampu." />
+                              <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                                 <VBox.margin>
+                                    <Insets top="12.0" />
+                                 </VBox.margin>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        
+                        <!-- Stats Grid -->
+                        <HBox spacing="20.0">
+                           <children>
+                              <!-- Card 1: Total Courses -->
+                              <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                                 <children>
+                                    <Label text="📚" style="-fx-font-size: 24px;" />
+                                    <Label styleClass="field-label" text="Total Kursus" />
+                                    <Label fx:id="totalCoursesLabel" styleClass="form-title" text="0" />
+                                    <Label styleClass="helper-header" text="KELAS AKTIF" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Card 2: Total Students -->
+                              <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                                 <children>
+                                    <Label text="👥" style="-fx-font-size: 24px;" />
+                                    <Label styleClass="field-label" text="Siswa Terdaftar" />
+                                    <Label fx:id="totalStudentsLabel" styleClass="form-title" text="0" />
+                                    <Label styleClass="helper-header" text="SISWA AKTIF" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Card 3: System Status -->
+                              <VBox spacing="10.0" styleClass="helper-card" HBox.hgrow="ALWAYS">
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                                 <children>
+                                    <Label text="📈" style="-fx-font-size: 24px;" />
+                                    <Label styleClass="field-label" text="Status Sistem" />
+                                    <Label styleClass="form-title" text="Optimal" textFill="#10b981" />
+                                    <Label styleClass="helper-header" text="H2 &amp; SPRING ONLINE" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        
+                        <!-- Info Card -->
+                        <VBox spacing="12.0" styleClass="helper-card" VBox.vgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <Label styleClass="field-label" text="Informasi Konsol Instruktur Terverifikasi" />
+                              <Label styleClass="helper-credential" text="⚙️ Kontrol Kelas: Edit status DRAFT/PUBLISHED dan kelola isi materi &amp; kuis." />
+                              <Label styleClass="helper-credential" text="📝 Pembuat Kuis: Tambah pertanyaan pilihan ganda &amp; essay dinamis." />
+                              <Label styleClass="helper-credential" text="📊 Analitik Real-Time: Statistik total kursus dan jumlah siswa terdaftar diambil otomatis." />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Tab View 2: KURSUS SAYA -->
+                  <VBox fx:id="myCoursesView" spacing="20.0" visible="false" managed="false">
+                     <padding>
+                        <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+                     </padding>
+                     <children>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="form-title" text="Kursus Saya" />
+                              <Label styleClass="form-subtitle" text="Kelola kelas dan isi materi pembelajaran Anda." />
+                              <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                                 <VBox.margin>
+                                    <Insets top="12.0" />
+                                 </VBox.margin>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        
+                        <ScrollPane fitToWidth="true" styleClass="course-scroll-pane" VBox.vgrow="ALWAYS">
+                           <content>
+                              <FlowPane fx:id="courseListContainer" hgap="24.0" vgap="24.0" style="-fx-background-color: transparent;">
+                                 <padding>
+                                    <Insets bottom="10.0" left="4.0" right="4.0" top="10.0" />
+                                 </padding>
+                              </FlowPane>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Tab View 3: BUAT KURSUS -->
+                  <VBox fx:id="createCourseView" spacing="24.0" visible="false" managed="false">
+                     <padding>
+                        <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+                     </padding>
+                     <children>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="form-title" text="Buat Kursus Baru" />
+                              <Label styleClass="form-subtitle" text="Buat kelas baru untuk siswa Anda." />
+                              <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                                 <VBox.margin>
+                                    <Insets top="12.0" />
+                                 </VBox.margin>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        
+                        <VBox spacing="16.0" styleClass="helper-card" maxWidth="500.0">
+                           <padding>
+                              <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                           </padding>
+                           <children>
+                              <VBox spacing="6.0">
+                                 <children>
+                                    <Label styleClass="field-label" text="Judul Kursus" />
+                                    <TextField fx:id="newCourseTitleField" promptText="Masukkan judul kursus..." styleClass="modern-text-field" />
+                                 </children>
+                              </VBox>
+                              
+                              <VBox spacing="6.0">
+                                 <children>
+                                    <Label styleClass="field-label" text="Kategori Kursus" />
+                                    <ComboBox fx:id="newCourseCategoryCombo" promptText="Pilih kategori..." styleClass="modern-text-field" maxWidth="Infinity" />
+                                 </children>
+                              </VBox>
+                              
+                              <VBox spacing="6.0">
+                                 <children>
+                                    <Label styleClass="field-label" text="Deskripsi Kursus" />
+                                    <TextArea fx:id="newCourseDescField" promptText="Masukkan deskripsi kursus..." styleClass="modern-text-field" prefHeight="120.0" wrapText="true" />
+                                 </children>
+                              </VBox>
+                              
+                              <Label fx:id="createCourseErrorLabel" managed="false" styleClass="error-feedback" text="" visible="false" wrapText="true" />
+                              
+                              <Button onAction="#handleCreateCourse" styleClass="login-button" style="-fx-background-color: #7c3aed;" maxWidth="Infinity" text="Buat Kursus Sekarang" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Tab View 5: PROFIL -->
+                  <VBox fx:id="profileView" spacing="28.0" visible="false" managed="false">
+                     <padding>
+                        <Insets bottom="32.0" left="40.0" right="40.0" top="32.0" />
+                     </padding>
+                     <children>
+                        <VBox spacing="4.0">
+                           <children>
+                              <Label styleClass="form-title" text="Profil Instruktur" />
+                              <Label styleClass="form-subtitle" text="Kelola informasi akun Anda dan ubah password." />
+                              <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;">
+                                 <VBox.margin>
+                                    <Insets top="12.0" />
+                                 </VBox.margin>
+                              </VBox>
+                           </children>
+                        </VBox>
+                        
+                        <HBox spacing="30.0" styleClass="helper-card" alignment="CENTER_LEFT">
+                           <padding>
+                              <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                           </padding>
+                           <children>
+                              <!-- Large Avatar -->
+                              <VBox spacing="12.0" alignment="CENTER">
+                                 <children>
+                                    <StackPane fx:id="largeAvatarContainer" styleClass="avatar-circle-container" style="-fx-min-width: 90px; -fx-min-height: 90px; -fx-max-width: 90px; -fx-max-height: 90px; -fx-background-radius: 45px; -fx-background-color: #7c3aed;">
+                                       <children>
+                                          <Label fx:id="largeAvatarFallback" text="👤" style="-fx-font-size: 50px; -fx-text-fill: white;" />
+                                          <ImageView fx:id="largeAvatarImageView" fitWidth="90.0" fitHeight="90.0" preserveRatio="true" visible="false" managed="false" />
+                                       </children>
+                                    </StackPane>
+                                    <Button onAction="#handleUploadProfilePicture" styleClass="login-button" style="-fx-font-size: 11px; -fx-padding: 6px 12px; -fx-background-color: #7c3aed;" text="Ubah Foto Profil" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- User Details Editor -->
+                              <VBox spacing="14.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <VBox spacing="4.0">
+                                       <children>
+                                          <Label styleClass="user-card-xp-header" text="NAMA PENGGUNA (Read-Only)" />
+                                          <Label fx:id="profileUsernameLabel" styleClass="user-card-username" style="-fx-font-size: 16px; -fx-text-fill: #1e1b4b;" text="instructor" />
+                                       </children>
+                                    </VBox>
+                                    
+                                    <VBox spacing="4.0">
+                                       <children>
+                                          <Label styleClass="field-label" text="Alamat Email" />
+                                          <TextField fx:id="profileEmailField" styleClass="modern-text-field" maxWidth="350.0" />
+                                       </children>
+                                    </VBox>
+                                    
+                                    <VBox spacing="4.0">
+                                       <children>
+                                          <Label styleClass="field-label" text="Kata Sandi Baru (Kosongkan jika tidak diubah)" />
+                                          <PasswordField fx:id="profilePasswordField" promptText="Masukkan sandi baru..." styleClass="modern-text-field" maxWidth="350.0" />
+                                       </children>
+                                    </VBox>
+                                    
+                                    <VBox spacing="4.0">
+                                       <children>
+                                          <Label styleClass="field-label" text="Konfirmasi Kata Sandi Baru" />
+                                          <PasswordField fx:id="profileConfirmPasswordField" promptText="Ulangi sandi baru..." styleClass="modern-text-field" maxWidth="350.0" />
+                                       </children>
+                                    </VBox>
+                                    
+                                    <Label fx:id="profileErrorLabel" managed="false" styleClass="error-feedback" text="" visible="false" wrapText="true" />
+                                    
+                                    <Button onAction="#handleUpdateProfile" styleClass="login-button" style="-fx-background-color: #7c3aed;" text="Simpan Perubahan" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Sub-View Tab 2: KELOLA KONTEN (Materi & Kuis) -->
+                  <VBox fx:id="manageContentView" spacing="20.0" visible="false" managed="false">
+                     <padding>
+                        <Insets bottom="24.0" left="30.0" right="30.0" top="24.0" />
+                     </padding>
+                     <children>
+                        
+                        <!-- Header -->
+                        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="classroom-header">
+                           <children>
+                              <Button onAction="#handleBackToCourseList" styleClass="classroom-back-button" text="⬅ Kembali" />
+                              <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label fx:id="classroomCourseTitle" styleClass="form-title" text="Nama Kelas" />
+                                    <Label fx:id="classroomCourseCategory" styleClass="form-subtitle" text="Kategori Kelas" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        
+                        <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;" />
+                        
+                        <!-- Content Manager Split -->
+                        <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              
+                              <!-- Left Pane: Materials & Quiz List -->
+                              <VBox prefWidth="260.0" minWidth="260.0" spacing="12.0" styleClass="classroom-sidebar" HBox.hgrow="NEVER">
+                                 <children>
+                                    <Label styleClass="field-label" style="-fx-font-size: 13px;" text="Materi &amp; Kuis" />
+                                    
+                                    <!-- Materials Scroll Container -->
+                                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="course-scroll-pane" style="-fx-background-color: transparent;">
+                                       <content>
+                                          <VBox fx:id="materialsContainer" spacing="8.0">
+                                             <padding>
+                                                <Insets bottom="6.0" left="2.0" right="2.0" top="6.0" />
+                                             </padding>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                    
+                                    <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;" />
+                                    
+                                    <!-- Add Material and Manage Quiz Buttons -->
+                                    <Button onAction="#handleShowAddMaterialForm" styleClass="login-button" style="-fx-background-color: #2563eb; -fx-font-size: 11px;" text="➕ Tambah Materi" maxWidth="Infinity" />
+                                    <Button fx:id="manageQuizBtn" onAction="#handleShowQuizEditor" styleClass="login-button" style="-fx-background-color: #ef4444; -fx-font-size: 11px;" text="📝 Kelola Kuis Akhir" maxWidth="Infinity" />
+                                 </children>
+                              </VBox>
+                              
+                              <!-- Right Pane: Active Workspace Editor Area -->
+                              <StackPane fx:id="editorWorkspace" HBox.hgrow="ALWAYS" styleClass="helper-card">
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                                 <children>
+                                    
+                                    <!-- Workspace Area 1: Material Form Editor -->
+                                    <VBox fx:id="materialEditorArea" spacing="14.0" visible="true" managed="true">
+                                       <children>
+                                          <Label fx:id="materialEditorTitleLabel" styleClass="form-title" style="-fx-font-size: 16px; -fx-text-fill: #7c3aed;" text="Tambah Materi Baru" />
+                                          
+                                          <VBox spacing="4.0">
+                                             <children>
+                                                <Label styleClass="field-label" text="Judul Materi" />
+                                                <TextField fx:id="materialTitleField" promptText="Masukkan judul materi..." styleClass="modern-text-field" />
+                                             </children>
+                                          </VBox>
+                                          
+                                          <VBox spacing="4.0">
+                                             <children>
+                                                <Label styleClass="field-label" text="Tipe Materi" />
+                                                <ComboBox fx:id="materialTypeCombo" promptText="Pilih tipe..." styleClass="modern-text-field" maxWidth="Infinity" />
+                                             </children>
+                                          </VBox>
+                                          
+                                          <VBox spacing="4.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Label styleClass="field-label" text="Konten Materi (Teks/URL)" />
+                                                <TextArea fx:id="materialContentField" promptText="Tulis isi materi di sini..." styleClass="modern-text-field" VBox.vgrow="ALWAYS" wrapText="true" />
+                                             </children>
+                                          </VBox>
+                                          
+                                          <Label fx:id="materialErrorLabel" managed="false" styleClass="error-feedback" text="" visible="false" wrapText="true" />
+                                          
+                                          <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                                             <children>
+                                                <Button fx:id="deleteMaterialBtn" onAction="#handleDeleteMaterial" styleClass="login-button" style="-fx-background-color: #ef4444;" text="Hapus Materi" visible="false" managed="false" />
+                                                <Button onAction="#handleClearMaterialForm" styleClass="login-button" style="-fx-background-color: #64748b;" text="Batal / Baru" />
+                                                <Button onAction="#handleSaveMaterial" styleClass="login-button" style="-fx-background-color: #2563eb;" text="Simpan Materi" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Workspace Area 2: Quiz Form Editor -->
+                                    <VBox fx:id="quizEditorArea" spacing="14.0" visible="false" managed="false">
+                                       <children>
+                                          <Label styleClass="form-title" style="-fx-font-size: 16px; -fx-text-fill: #dc2626;" text="Pengaturan Kuis Akhir" />
+                                          
+                                          <HBox spacing="16.0">
+                                             <children>
+                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="field-label" text="Batas Waktu (Menit)" />
+                                                      <TextField fx:id="quizTimeLimitField" styleClass="modern-text-field" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="field-label" text="Nilai Kelulusan (0-100)" />
+                                                      <TextField fx:id="quizPassingScoreField" styleClass="modern-text-field" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="field-label" text="Batas Percobaan" />
+                                                      <TextField fx:id="quizMaxAttemptsField" styleClass="modern-text-field" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          
+                                          <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                                             <children>
+                                                <Label fx:id="quizErrorLabel" managed="false" styleClass="error-feedback" text="" visible="false" wrapText="true" />
+                                                <Button onAction="#handleSaveQuizSettings" styleClass="login-button" style="-fx-background-color: #ef4444;" text="Simpan Pengaturan Kuis" />
+                                             </children>
+                                          </HBox>
+                                          
+                                          <VBox prefHeight="1.0" minHeight="1.0" maxHeight="1.0" style="-fx-background-color: #cbd5e1;" />
+                                          
+                                          <!-- Questions List -->
+                                          <HBox alignment="CENTER_LEFT">
+                                             <children>
+                                                <Label styleClass="field-label" style="-fx-font-size: 13px;" text="Daftar Pertanyaan Kuis" />
+                                                <HBox HBox.hgrow="ALWAYS" />
+                                                <Button onAction="#handleShowAddQuestionForm" styleClass="login-button" style="-fx-background-color: #10b981; -fx-font-size: 11px; -fx-padding: 6px 12px;" text="➕ Tambah Soal" />
+                                             </children>
+                                          </HBox>
+                                          
+                                          <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="course-scroll-pane" style="-fx-background-color: transparent;">
+                                             <content>
+                                                <VBox fx:id="questionsContainer" spacing="10.0">
+                                                   <padding>
+                                                      <Insets bottom="6.0" left="2.0" right="2.0" top="6.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </VBox>
+                                    
+                                    <!-- Workspace Area 3: Question Editor Form -->
+                                    <VBox fx:id="questionEditorArea" spacing="14.0" visible="false" managed="false">
+                                       <children>
+                                          <Label fx:id="questionEditorTitleLabel" styleClass="form-title" style="-fx-font-size: 16px; -fx-text-fill: #10b981;" text="Tambah Pertanyaan Baru" />
+                                          
+                                          <HBox spacing="16.0">
+                                             <children>
+                                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label styleClass="field-label" text="Tipe Soal" />
+                                                      <ComboBox fx:id="questionTypeCombo" promptText="Pilih tipe..." styleClass="modern-text-field" maxWidth="Infinity" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox spacing="4.0" prefWidth="120.0">
+                                                   <children>
+                                                      <Label styleClass="field-label" text="Poin Nilai" />
+                                                      <TextField fx:id="questionPointsField" styleClass="modern-text-field" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          
+                                          <VBox spacing="4.0">
+                                             <children>
+                                                <Label styleClass="field-label" text="Teks Pertanyaan" />
+                                                <TextArea fx:id="questionTextField" promptText="Tulis soal kuis di sini..." styleClass="modern-text-field" prefHeight="70.0" wrapText="true" />
+                                             </children>
+                                          </VBox>
+                                          
+                                          <!-- Multiple Choice Options Container -->
+                                          <VBox fx:id="mcOptionsContainer" spacing="8.0" visible="false" managed="false">
+                                             <children>
+                                                <Label styleClass="field-label" text="Opsi Jawaban (Pilihan Ganda)" />
+                                                <HBox spacing="10.0">
+                                                   <children>
+                                                      <TextField fx:id="optionAField" promptText="Opsi A..." styleClass="modern-text-field" HBox.hgrow="ALWAYS" />
+                                                      <TextField fx:id="optionBField" promptText="Opsi B..." styleClass="modern-text-field" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                                <HBox spacing="10.0">
+                                                   <children>
+                                                      <TextField fx:id="optionCField" promptText="Opsi C..." styleClass="modern-text-field" HBox.hgrow="ALWAYS" />
+                                                      <TextField fx:id="optionDField" promptText="Opsi D..." styleClass="modern-text-field" HBox.hgrow="ALWAYS" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                          
+                                          <VBox spacing="4.0">
+                                             <children>
+                                                <Label fx:id="questionAnswerLabel" styleClass="field-label" text="Kunci Jawaban" />
+                                                <TextField fx:id="questionAnswerField" promptText="Kunci jawaban (Contoh: A untuk PG, atau kata kunci untuk Essay)..." styleClass="modern-text-field" />
+                                             </children>
+                                          </VBox>
+                                          
+                                          <VBox spacing="4.0">
+                                             <children>
+                                                <Label styleClass="field-label" text="Pembahasan / Penjelasan Jawaban" />
+                                                <TextArea fx:id="questionExplanationField" promptText="Tulis pembahasan mengapa jawaban tersebut benar..." styleClass="modern-text-field" prefHeight="50.0" wrapText="true" />
+                                             </children>
+                                          </VBox>
+                                          
+                                          <Label fx:id="questionErrorLabel" managed="false" styleClass="error-feedback" text="" visible="false" wrapText="true" />
+                                          
+                                          <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                                             <children>
+                                                <Button onAction="#handleCancelQuestionEdit" styleClass="login-button" style="-fx-background-color: #64748b;" text="Batal" />
+                                                <Button onAction="#handleSaveQuestion" styleClass="login-button" style="-fx-background-color: #10b981;" text="Simpan Soal" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    
+                                 </children>
+                              </StackPane>
+                              
+                           </children>
+                        </HBox>
+                        
+                     </children>
+                  </VBox>
+                  
+               </children>
+            </StackPane>
+         </children>
+      </VBox>
    </children>
-</VBox>
+</HBox>
